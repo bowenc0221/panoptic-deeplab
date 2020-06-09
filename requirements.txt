@@ -1,0 +1,7 @@
+EasyDict==1.7
+opencv-python
+Cython
+Pillow
+tabulate
+termcolor
+fvcore
