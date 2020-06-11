@@ -16,6 +16,9 @@ original numbers from [Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for
 when making comparison.
 
 ## What's New
+* We release a detailed [technical report](/docs/tech_report.pdf) with implementation details 
+and supplementary analysis on Panoptic-DeepLab. In particular, we find center prediction is almost perfect and the bottleneck of 
+bottom-up method still lies in semantic segmentation
 * It is powered by the [PyTorch](https://pytorch.org) deep learning framework.
 * Can be trained even on 4 1080TI GPUs (no need for 32 TPUs!).
 
