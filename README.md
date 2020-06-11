@@ -5,6 +5,8 @@ where the goal is to assign semantic labels (e.g., person, dog, cat and so on) t
 every pixel in the input image as well as instance labels (e.g. an id of 1, 2, 3, 
 etc) to pixels belonging to thing classes. 
 
+![Illustrating of Panoptic-DeepLab](/docs/panoptic_deeplab.png)
+
 This is the **PyTorch re-implementation** of our CVPR2020 paper: 
 [Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation](https://arxiv.org/abs/1911.10194).
 
