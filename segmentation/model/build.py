@@ -6,7 +6,7 @@
 import torch
 
 from .backbone import resnet, mobilenet, mnasnet
-from .meta_arch import DeepLabV3, DeepLabV3Plus, PanopticDeepLab, PanopticDeepLabV2
+from .meta_arch import DeepLabV3, DeepLabV3Plus, PanopticDeepLab
 from .loss import RegularCE, OhemCE, DeepLabCE, L1Loss, MSELoss, CrossEntropyLoss
 
 
@@ -22,7 +22,6 @@ def build_segmentation_model_from_cfg(config):
         'deeplabv3': DeepLabV3,
         'deeplabv3plus': DeepLabV3Plus,
         'panoptic_deeplab': PanopticDeepLab,
-        'panoptic_deeplab_v2': PanopticDeepLabV2,
     }
 
     model_cfg = {
@@ -71,33 +70,6 @@ def build_segmentation_model_from_cfg(config):
             center_loss_weight=config.LOSS.CENTER.WEIGHT,
             offset_loss=build_loss_from_cfg(config.LOSS.OFFSET),
             offset_loss_weight=config.LOSS.OFFSET.WEIGHT,
-        ),
-        'panoptic_deeplab_v2': dict(
-            replace_stride_with_dilation=config.MODEL.BACKBONE.DILATION,
-            in_channels=config.MODEL.DECODER.IN_CHANNELS,
-            feature_key=config.MODEL.DECODER.FEATURE_KEY,
-            low_level_channels=config.MODEL.PANOPTIC_DEEPLAB.LOW_LEVEL_CHANNELS,
-            low_level_key=config.MODEL.PANOPTIC_DEEPLAB.LOW_LEVEL_KEY,
-            low_level_channels_project=config.MODEL.PANOPTIC_DEEPLAB.LOW_LEVEL_CHANNELS_PROJECT,
-            decoder_channels=config.MODEL.DECODER.DECODER_CHANNELS,
-            atrous_rates=config.MODEL.DECODER.ATROUS_RATES,
-            num_classes=config.DATASET.NUM_CLASSES,
-            has_instance=config.MODEL.PANOPTIC_DEEPLAB.INSTANCE.ENABLE,
-            instance_low_level_channels_project=config.MODEL.PANOPTIC_DEEPLAB.INSTANCE.LOW_LEVEL_CHANNELS_PROJECT,
-            instance_decoder_channels=config.MODEL.PANOPTIC_DEEPLAB.INSTANCE.DECODER_CHANNELS,
-            instance_aspp_channels=config.MODEL.PANOPTIC_DEEPLAB.INSTANCE.ASPP_CHANNELS,
-            instance_num_classes=config.MODEL.PANOPTIC_DEEPLAB.INSTANCE.NUM_CLASSES,
-            instance_class_key=config.MODEL.PANOPTIC_DEEPLAB.INSTANCE.CLASS_KEY,
-            foreground_seg=config.MODEL.PANOPTIC_DEEPLAB.INSTANCE.FOREGROUND_SEG,
-            foreground_arch=config.MODEL.PANOPTIC_DEEPLAB.INSTANCE.FOREGROUND_ARCH,
-            semantic_loss=build_loss_from_cfg(config.LOSS.SEMANTIC),
-            semantic_loss_weight=config.LOSS.SEMANTIC.WEIGHT,
-            center_loss=build_loss_from_cfg(config.LOSS.CENTER),
-            center_loss_weight=config.LOSS.CENTER.WEIGHT,
-            offset_loss=build_loss_from_cfg(config.LOSS.OFFSET),
-            offset_loss_weight=config.LOSS.OFFSET.WEIGHT,
-            foreground_loss=build_loss_from_cfg(config.LOSS.FOREGROUND),
-            foreground_loss_weight=config.LOSS.FOREGROUND.WEIGHT,
         ),
     }
 
