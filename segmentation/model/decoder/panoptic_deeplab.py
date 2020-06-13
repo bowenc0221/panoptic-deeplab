@@ -77,7 +77,7 @@ class SinglePanopticDeepLabDecoder(nn.Module):
 
 
 class SinglePanopticDeepLabHead(nn.Module):
-    def __init__(self, decoder_channels, num_classes, class_key):
+    def __init__(self, decoder_channels, head_channels, num_classes, class_key):
         super(SinglePanopticDeepLabHead, self).__init__()
         fuse_conv = partial(stacked_conv, kernel_size=5, num_stack=1, padding=2,
                             conv_type='depthwise_separable_conv')
@@ -90,9 +90,9 @@ class SinglePanopticDeepLabHead(nn.Module):
             classifier[class_key[i]] = nn.Sequential(
                 fuse_conv(
                     decoder_channels,
-                    decoder_channels,
+                    head_channels,
                 ),
-                nn.Conv2d(decoder_channels, num_classes[i], 1)
+                nn.Conv2d(head_channels, num_classes[i], 1)
             )
         self.classifier = nn.ModuleDict(classifier)
         self.class_key = class_key
@@ -114,7 +114,7 @@ class PanopticDeepLabDecoder(nn.Module):
         self.semantic_decoder = SinglePanopticDeepLabDecoder(in_channels, feature_key, low_level_channels,
                                                              low_level_key, low_level_channels_project,
                                                              decoder_channels, atrous_rates)
-        self.semantic_head = SinglePanopticDeepLabHead(decoder_channels, [num_classes], ['semantic'])
+        self.semantic_head = SinglePanopticDeepLabHead(decoder_channels, decoder_channels, [num_classes], ['semantic'])
         # Build instance decoder
         self.instance_decoder = None
         self.instance_head = None
@@ -132,6 +132,7 @@ class PanopticDeepLabDecoder(nn.Module):
             self.instance_decoder = SinglePanopticDeepLabDecoder(**instance_decoder_kwargs)
             instance_head_kwargs = dict(
                 decoder_channels=kwargs['instance_decoder_channels'],
+                head_channels=kwargs['instance_head_channels'],
                 num_classes=kwargs['instance_num_classes'],
                 class_key=kwargs['instance_class_key']
             )

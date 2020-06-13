@@ -18,6 +18,7 @@ MODEL:
       ENABLE: True
       LOW_LEVEL_CHANNELS_PROJECT: (64, 32, 16)
       DECODER_CHANNELS: 128
+      HEAD_CHANNELS: 32
       ASPP_CHANNELS: 256
       NUM_CLASSES: (1, 2)
       CLASS_KEY: ["center", "offset"]
