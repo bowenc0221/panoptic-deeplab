@@ -66,3 +66,4 @@ We have used utility functions from other wonderful open-source projects, we wou
 
 ## Contact
 [Bowen Cheng](https://bowenc0221.github.io/) (bcheng9 AT illinois DOT edu)
+[openseg-group] (yuyua AT microsoft DOT com)
