@@ -66,4 +66,7 @@ We have used utility functions from other wonderful open-source projects, we wou
 
 ## Contact
 [Bowen Cheng](https://bowenc0221.github.io/) (bcheng9 AT illinois DOT edu)
+<<<<<<< HEAD
 [openseg-group](https://github.com/openseg-group) (yuyua AT microsoft DOT com)
+=======
+>>>>>>> parent of ffb79be... initial commit
