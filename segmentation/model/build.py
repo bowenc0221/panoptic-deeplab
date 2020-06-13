@@ -61,6 +61,7 @@ def build_segmentation_model_from_cfg(config):
             has_instance=config.MODEL.PANOPTIC_DEEPLAB.INSTANCE.ENABLE,
             instance_low_level_channels_project=config.MODEL.PANOPTIC_DEEPLAB.INSTANCE.LOW_LEVEL_CHANNELS_PROJECT,
             instance_decoder_channels=config.MODEL.PANOPTIC_DEEPLAB.INSTANCE.DECODER_CHANNELS,
+            instance_head_channels=config.MODEL.PANOPTIC_DEEPLAB.INSTANCE.HEAD_CHANNELS,
             instance_aspp_channels=config.MODEL.PANOPTIC_DEEPLAB.INSTANCE.ASPP_CHANNELS,
             instance_num_classes=config.MODEL.PANOPTIC_DEEPLAB.INSTANCE.NUM_CLASSES,
             instance_class_key=config.MODEL.PANOPTIC_DEEPLAB.INSTANCE.CLASS_KEY,

@@ -34,6 +34,10 @@ See [GETTING_STARTED.md](GETTING_STARTED.md).
 
 See [MODEL_ZOO.md](MODEL_ZOO.md).
 
+## Changelog
+
+See [changelog](/docs/changelog.md)
+
 ## Citing Panoptic-DeepLab
 
 If you find this code helpful in your research or wish to refer to the baseline results, please use the following BibTeX entry.
