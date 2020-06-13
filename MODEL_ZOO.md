@@ -10,4 +10,4 @@ ResNet implementation.
 ### Cityscapes baselines
 | Name    | PQ   | SQ   | RQ   | AP   | mIoU | Model |
 | ------- | ---- | ---- | ---- | ---- | ---- | ----- |
-| [R50-os32](configs/panoptic_deeplab_R50_os32_cityscapes.yaml)| 59.8 | 80.0 | 73.5 | 26.9 | 78.6 | [Google Drive](https://drive.google.com/file/d/1ka12E1vlLDN-xUTF8oVYuujMsrrnRQWB/view?usp=sharing) |
+| [R50-os32](configs/panoptic_deeplab_R50_os32_cityscapes.yaml)| 59.8 | 80.0 | 73.5 | 26.9 | 78.6 | [Google Drive](https://drive.google.com/file/d/1IhZXtLpVkzhH4S2k27zARM8kUI7G6Hfn/view?usp=sharing) |
