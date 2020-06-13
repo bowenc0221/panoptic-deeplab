@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-import pdb
+
 import torch.nn as nn
 from torchvision.models.utils import load_state_dict_from_url
 
@@ -460,8 +460,6 @@ class HighResolutionNet(nn.Module):
             else:
                 x_list.append(y_list[i])
         y_list = self.stage4(x_list)
-
-        pdb.set_trace()
 
         outputs = {}
         # See note [TorchScript super()]
