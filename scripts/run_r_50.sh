@@ -1,7 +1,6 @@
 PYTHON="/opt/conda/bin/python"
 
 CONFIG="panoptic_deeplab_R50_os32_cityscapes"
-BACKBONE="R50"
 
 # training
 $PYTHON -m torch.distributed.launch \
