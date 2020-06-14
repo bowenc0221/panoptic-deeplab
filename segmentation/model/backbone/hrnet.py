@@ -31,10 +31,18 @@ __all__ = ['hrnet18', 'hrnet32', 'hrnet48']
 
 
 model_urls = {
-    """all the checkpoints come from https://github.com/HRNet/HRNet-Image-Classification"""
-    'hrnet18': 'https://onedrive.live.com/?authkey=%21AMkPimlmClRvmpw&cid=F7FD0B7F26543CEB&id=F7FD0B7F26543CEB%21112&parId=F7FD0B7F26543CEB%21105&o=OneUp',
-    'hrnet32': 'https://onedrive.live.com/?authkey=%21AIBMemi9xOUFR0w&cid=F7FD0B7F26543CEB&id=F7FD0B7F26543CEB%21117&parId=F7FD0B7F26543CEB%21105&action=locate',
-    'hrnet48': 'http://sceneparsing.csail.mit.edu/model/pretrained_resnet/hrnetv2_w48-imagenet.pth',
+    # all the checkpoints come from https://github.com/HRNet/HRNet-Image-Classification
+
+    # Link to Web UI
+    # 'hrnet18': 'https://onedrive.live.com/?authkey=%21AMkPimlmClRvmpw&cid=F7FD0B7F26543CEB&id=F7FD0B7F26543CEB%21112&parId=F7FD0B7F26543CEB%21105&o=OneUp',
+    # 'hrnet32': 'https://onedrive.live.com/?authkey=%21AIBMemi9xOUFR0w&cid=F7FD0B7F26543CEB&id=F7FD0B7F26543CEB%21117&parId=F7FD0B7F26543CEB%21105&action=locate',
+    # 'hrnet48': 'http://sceneparsing.csail.mit.edu/model/pretrained_resnet/hrnetv2_w48-imagenet.pth',
+    # 'hrnet48': 'https://onedrive.live.com/?authkey=%21AKvqI6pBZlifgJk&cid=F7FD0B7F26543CEB&id=F7FD0B7F26543CEB%21116&parId=F7FD0B7F26543CEB%21105&action=locate'
+
+    # Direct download link
+    'hrnet18': 'https://opr0mq.dm.files.1drv.com/y4mIoWpP2n-LUohHHANpC0jrOixm1FZgO2OsUtP2DwIozH5RsoYVyv_De5wDgR6XuQmirMV3C0AljLeB-zQXevfLlnQpcNeJlT9Q8LwNYDwh3TsECkMTWXCUn3vDGJWpCxQcQWKONr5VQWO1hLEKPeJbbSZ6tgbWwJHgHF7592HY7ilmGe39o5BhHz7P9QqMYLBts6V7QGoaKrr0PL3wvvR4w',
+    'hrnet32': 'https://opr74a.dm.files.1drv.com/y4mKOuRSNGQQlp6wm_a9bF-UEQwp6a10xFCLhm4bqjDu6aSNW9yhDRM7qyx0vK0WTh42gEaniUVm3h7pg0H-W0yJff5qQtoAX7Zze4vOsqjoIthp-FW3nlfMD0-gcJi8IiVrMWqVOw2N3MbCud6uQQrTaEAvAdNjtjMpym1JghN-F060rSQKmgtq5R-wJe185IyW4-_c5_ItbhYpCyLxdqdEQ',
+    'hrnet48': 'https://optgaw.dm.files.1drv.com/y4mWNpya38VArcDInoPaL7GfPMgcop92G6YRkabO1QTSWkCbo7djk8BFZ6LK_KHHIYE8wqeSAChU58NVFOZEvqFaoz392OgcyBrq_f8XGkusQep_oQsuQ7DPQCUrdLwyze_NlsyDGWot0L9agkQ-M_SfNr10ETlCF5R7BdKDZdupmcMXZc-IE3Ysw1bVHdOH4l-XEbEKFAi6ivPUbeqlYkRMQ'
 }
 
 
@@ -476,7 +484,10 @@ class HighResolutionNet(nn.Module):
 
 
 def _hrnet(arch, pretrained, progress, **kwargs):
-    from .hrnet_config import MODEL_CONFIGS
+    try:
+        from .hrnet_config import MODEL_CONFIGS
+    except ImportError:
+        from hrnet_config import MODEL_CONFIGS
     model = HighResolutionNet(MODEL_CONFIGS[arch], **kwargs)
     if pretrained:
         state_dict = load_state_dict_from_url(model_urls[arch],
@@ -484,23 +495,31 @@ def _hrnet(arch, pretrained, progress, **kwargs):
         model.load_state_dict(state_dict, strict=False)
     return model
 
-
-def hrnet18(pretrained=False, progress=True, **kwargs):
-    r"""HRNet-18 model
-    """
-    return _hrnet('hrnet18', pretrained, progress,
-                   **kwargs)
-
-
-def hrnet32(pretrained=False, progress=True, **kwargs):
-    r"""HRNet-32 model
-    """
-    return _hrnet('hrnet32', pretrained, progress,
-                   **kwargs)
+if __name__ == '__main__':
+    _hrnet('hrnet18', True, True)
+    print('HRNet-W18 loaded successfully')
+    _hrnet('hrnet32', True, True)
+    print('HRNet-W32 loaded successfully')
+    _hrnet('hrnet48', True, True)
+    print('HRNet-W48 loaded successfully')
 
 
-def hrnet48(pretrained=False, progress=True, **kwargs):
-    r"""HRNet-48 model
-    """
-    return _hrnet('hrnet48', pretrained, progress,
-                   **kwargs)
+# def hrnet18(pretrained=False, progress=True, **kwargs):
+#     r"""HRNet-18 model
+#     """
+#     return _hrnet('hrnet18', pretrained, progress,
+#                    **kwargs)
+
+
+# def hrnet32(pretrained=False, progress=True, **kwargs):
+#     r"""HRNet-32 model
+#     """
+#     return _hrnet('hrnet32', pretrained, progress,
+#                    **kwargs)
+
+
+# def hrnet48(pretrained=False, progress=True, **kwargs):
+#     r"""HRNet-48 model
+#     """
+#     return _hrnet('hrnet48', pretrained, progress,
+#                    **kwargs)
