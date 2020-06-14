@@ -28,6 +28,7 @@ pip install git+https://github.com/mcordts/cityscapesScripts.git
 Note:
 - labelTrainIds.png are created by `python cityscapesscripts/preparation/createTrainIdLabelImgs.py`.  
 - panoptic.png are created by `python cityscapesscripts/preparation/createPanopticImgs.py --use-train-id`.
+- You may also need to run `python cityscapesscripts/preparation/createPanopticImgs.py` to generate annotation for evaluation (in eval id instead of train id).
 
 ## Expected dataset structure for COCO panoptic segmentation:
 
