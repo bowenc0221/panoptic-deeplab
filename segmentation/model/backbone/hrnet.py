@@ -23,13 +23,17 @@ SOFTWARE.
 """
 
 import torch.nn as nn
+#TODO customize the load_state_dict_from_url to support azure link/google drive link.
 from torchvision.models.utils import load_state_dict_from_url
 
 
-__all__ = ['hrnet48']
+__all__ = ['hrnet18', 'hrnet32', 'hrnet48']
 
 
 model_urls = {
+    """all the checkpoints come from https://github.com/HRNet/HRNet-Image-Classification"""
+    'hrnet18': 'https://onedrive.live.com/?authkey=%21AMkPimlmClRvmpw&cid=F7FD0B7F26543CEB&id=F7FD0B7F26543CEB%21112&parId=F7FD0B7F26543CEB%21105&o=OneUp',
+    'hrnet32': 'https://onedrive.live.com/?authkey=%21AIBMemi9xOUFR0w&cid=F7FD0B7F26543CEB&id=F7FD0B7F26543CEB%21117&parId=F7FD0B7F26543CEB%21105&action=locate',
     'hrnet48': 'http://sceneparsing.csail.mit.edu/model/pretrained_resnet/hrnetv2_w48-imagenet.pth',
 }
 
@@ -481,18 +485,18 @@ def _hrnet(arch, pretrained, progress, **kwargs):
     return model
 
 
-# def hrnet18(pretrained=False, progress=True, **kwargs):
-#     r"""HRNet-18 model
-#     """
-#     return _hrnet('hrnet18', pretrained, progress,
-#                    **kwargs)
+def hrnet18(pretrained=False, progress=True, **kwargs):
+    r"""HRNet-18 model
+    """
+    return _hrnet('hrnet18', pretrained, progress,
+                   **kwargs)
 
 
-# def hrnet32(pretrained=False, progress=True, **kwargs):
-#     r"""HRNet-32 model
-#     """
-#     return _hrnet('hrnet32', pretrained, progress,
-#                    **kwargs)
+def hrnet32(pretrained=False, progress=True, **kwargs):
+    r"""HRNet-32 model
+    """
+    return _hrnet('hrnet32', pretrained, progress,
+                   **kwargs)
 
 
 def hrnet48(pretrained=False, progress=True, **kwargs):
