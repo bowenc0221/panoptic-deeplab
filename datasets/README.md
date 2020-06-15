@@ -10,10 +10,10 @@ cityscapes/
     val/
     test/
     cityscapes_panoptic_train_trainId.json
-    cityscapes_panoptic_val_trainId.json
     cityscapes_panoptic_train_trainId/
       *_panoptic.png
-    cityscapes_panoptic_val_trainId/
+    cityscapes_panoptic_val.json
+    cityscapes_panoptic_val/
       *_panoptic.png
   leftImg8bit/
     train/
@@ -26,9 +26,11 @@ pip install git+https://github.com/mcordts/cityscapesScripts.git
 ```
 
 Note:
+- We train model with train_id (continuous class label from 0 to 18) and evaluate model with original class label.
 - labelTrainIds.png are created by `python cityscapesscripts/preparation/createTrainIdLabelImgs.py`.  
-- panoptic.png are created by `python cityscapesscripts/preparation/createPanopticImgs.py --use-train-id`.
-- You may also need to run `python cityscapesscripts/preparation/createPanopticImgs.py` to generate annotation for evaluation (in eval id instead of train id).
+- panoptic.png are created by
+  - `python cityscapesscripts/preparation/createPanopticImgs.py --use-train-id` for generating training labels.
+  - `python cityscapesscripts/preparation/createPanopticImgs.py` for generating evaluation labels.
 
 ## Expected dataset structure for COCO panoptic segmentation:
 
