@@ -1,7 +1,7 @@
 PYTHON="/opt/conda/bin/python"
+$PYTHON -m pip install git+https://github.com/mcordts/cityscapesScripts.git
 
 CONFIG=$1
-# CONFIG="panoptic_deeplab_H48_os4_bs8_cityscapes"
 
 # training
 $PYTHON -m torch.distributed.launch \
@@ -11,4 +11,4 @@ $PYTHON -m torch.distributed.launch \
 
 # evaluation
 $PYTHON tools/test_net_single_core.py \
-                --cfg configs/${CONFIG}.yaml 
+                --cfg configs/${CONFIG}.yaml

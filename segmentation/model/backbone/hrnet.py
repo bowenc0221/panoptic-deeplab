@@ -22,9 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import logging
 import torch.nn as nn
+import torch.nn.functional as F
 from torchvision.models.utils import load_state_dict_from_url
 
+logger = logging.getLogger(__name__)
 
 __all__ = ['hrnet18', 'hrnet32', 'hrnet48']
 
@@ -89,11 +92,6 @@ class BasicBlock(nn.Module):
 
 
 class Bottleneck(nn.Module):
-    # Bottleneck in torchvision places the stride for downsampling at 3x3 convolution(self.conv2)
-    # while original implementation places the stride at the first 1x1 convolution(self.conv1)
-    # according to "Deep residual learning for image recognition"https://arxiv.org/abs/1512.03385.
-    # This variant is also known as ResNet V1.5 and improves accuracy according to
-    # https://ngc.nvidia.com/catalog/model-scripts/nvidia:resnet_50_v1_5_for_pytorch.
 
     expansion = 4
 
@@ -157,23 +155,26 @@ class HighResolutionModule(nn.Module):
         self.branches = self._make_branches(
             num_branches, blocks, num_blocks, num_channels)
         self.fuse_layers = self._make_fuse_layers()
-        self.relu = nn.ReLU(False)
+        self.relu = nn.ReLU(inplace=True)
 
     def _check_branches(self, num_branches, blocks, num_blocks,
                         num_inchannels, num_channels):
         if num_branches != len(num_blocks):
             error_msg = 'NUM_BRANCHES({}) <> NUM_BLOCKS({})'.format(
                 num_branches, len(num_blocks))
+            logger.error(error_msg)
             raise ValueError(error_msg)
 
         if num_branches != len(num_channels):
             error_msg = 'NUM_BRANCHES({}) <> NUM_CHANNELS({})'.format(
                 num_branches, len(num_channels))
+            logger.error(error_msg)
             raise ValueError(error_msg)
 
         if num_branches != len(num_inchannels):
             error_msg = 'NUM_BRANCHES({}) <> NUM_INCHANNELS({})'.format(
                 num_branches, len(num_inchannels))
+            logger.error(error_msg)
             raise ValueError(error_msg)
 
     def _make_one_branch(self, branch_index, block, num_blocks, num_channels,
@@ -190,12 +191,12 @@ class HighResolutionModule(nn.Module):
 
         layers = []
         layers.append(block(self.num_inchannels[branch_index],
-                            num_channels[branch_index], stride, downsample))
+                            num_channels[branch_index], stride, downsample, norm_layer=self.norm_layer))
         self.num_inchannels[branch_index] = \
             num_channels[branch_index] * block.expansion
         for i in range(1, num_blocks[branch_index]):
             layers.append(block(self.num_inchannels[branch_index],
-                                num_channels[branch_index]))
+                                num_channels[branch_index], norm_layer=self.norm_layer))
 
         return nn.Sequential(*layers)
 
@@ -226,13 +227,12 @@ class HighResolutionModule(nn.Module):
                                   1,
                                   0,
                                   bias=False),
-                        self.norm_layer(num_inchannels[i]),
-                        nn.Upsample(scale_factor=2 ** (j - i), mode='nearest')))
+                        self.norm_layer(num_inchannels[i])))
                 elif j == i:
                     fuse_layer.append(None)
                 else:
                     conv3x3s = []
-                    for k in range(i - j):
+                    for k in range(i-j):
                         if k == i - j - 1:
                             num_outchannels_conv3x3 = num_inchannels[i]
                             conv3x3s.append(nn.Sequential(
@@ -247,7 +247,7 @@ class HighResolutionModule(nn.Module):
                                           num_outchannels_conv3x3,
                                           3, 2, 1, bias=False),
                                 self.norm_layer(num_outchannels_conv3x3),
-                                nn.ReLU(False)))
+                                nn.ReLU(inplace=True)))
                     fuse_layer.append(nn.Sequential(*conv3x3s))
             fuse_layers.append(nn.ModuleList(fuse_layer))
 
@@ -265,13 +265,19 @@ class HighResolutionModule(nn.Module):
 
         x_fuse = []
         for i in range(len(self.fuse_layers)):
-            if i == 0:
-                y = x[0]
-            else:
-                y = self.fuse_layers[i][0](x[0])
+            y = x[0] if i == 0 else self.fuse_layers[i][0](x[0])
             for j in range(1, self.num_branches):
                 if i == j:
                     y = y + x[j]
+                elif j > i:
+                    width_output = x[i].shape[-1]
+                    height_output = x[i].shape[-2]
+                    y = y + F.interpolate(
+                        self.fuse_layers[i][j](x[j]),
+                        size=[height_output, width_output],
+                        mode='bilinear',
+                        align_corners=True
+                        )
                 else:
                     y = y + self.fuse_layers[i][j](x[j])
             x_fuse.append(self.relu(y))
@@ -308,43 +314,44 @@ class HighResolutionNet(nn.Module):
         # stage 1
         self.stage1_cfg = cfg['STAGE1']
         num_channels = self.stage1_cfg['NUM_CHANNELS'][0]
-        block_type = self.stage1_cfg['BLOCK']
+        block = blocks_dict[self.stage1_cfg['BLOCK']]
         num_blocks = self.stage1_cfg['NUM_BLOCKS'][0]
-
-        block = blocks_dict[block_type]
-        stage1_out_channels = num_channels * block.expansion
         self.layer1 = self._make_layer(block, 64, num_channels, num_blocks)
+        stage1_out_channel = block.expansion*num_channels
 
         # stage 2
         self.stage2_cfg = cfg['STAGE2']
         num_channels = self.stage2_cfg['NUM_CHANNELS']
-        block_type = self.stage2_cfg['BLOCK']
-
-        block = blocks_dict[block_type]
-        num_channels = [num_channels[i] * block.expansion for i in range(len(num_channels))]
-        self.transition1 = self._make_transition_layer([stage1_out_channels], num_channels)
-        # num_modules, num_branches, num_blocks, num_channels, block, fuse_method, num_inchannels
-        self.stage2, pre_stage_channels = self._make_stage(self.stage2_cfg, num_channels)
+        block = blocks_dict[self.stage2_cfg['BLOCK']]
+        num_channels = [
+            num_channels[i] * block.expansion for i in range(len(num_channels))]
+        self.transition1 = self._make_transition_layer(
+            [stage1_out_channel], num_channels)
+        self.stage2, pre_stage_channels = self._make_stage(
+            self.stage2_cfg, num_channels)
 
         # stage 3
         self.stage3_cfg = cfg['STAGE3']
         num_channels = self.stage3_cfg['NUM_CHANNELS']
-        block_type = self.stage3_cfg['BLOCK']
-
-        block = blocks_dict[block_type]
-        num_channels = [num_channels[i] * block.expansion for i in range(len(num_channels))]
-        self.transition2 = self._make_transition_layer(pre_stage_channels, num_channels)
-        self.stage3, pre_stage_channels = self._make_stage(self.stage3_cfg, num_channels)
+        block = blocks_dict[self.stage3_cfg['BLOCK']]
+        num_channels = [
+            num_channels[i] * block.expansion for i in range(len(num_channels))]
+        self.transition2 = self._make_transition_layer(
+            pre_stage_channels, num_channels)
+        self.stage3, pre_stage_channels = self._make_stage(
+            self.stage3_cfg, num_channels)
 
         # stage 4
         self.stage4_cfg = cfg['STAGE4']
         num_channels = self.stage4_cfg['NUM_CHANNELS']
-        block_type = self.stage4_cfg['BLOCK']
+        block = blocks_dict[self.stage4_cfg['BLOCK']]
+        num_channels = [
+            num_channels[i] * block.expansion for i in range(len(num_channels))]
+        self.transition3 = self._make_transition_layer(
+            pre_stage_channels, num_channels)
+        self.stage4, pre_stage_channels = self._make_stage(
+            self.stage4_cfg, num_channels, multi_scale_output=True)
 
-        block = blocks_dict[block_type]
-        num_channels = [num_channels[i] * block.expansion for i in range(len(num_channels))]
-        self.transition3 = self._make_transition_layer(pre_stage_channels, num_channels)
-        self.stage4, pre_stage_channels = self._make_stage(self.stage4_cfg, num_channels)
 
     def _make_transition_layer(
             self, num_channels_pre_layer, num_channels_cur_layer):
@@ -368,10 +375,10 @@ class HighResolutionNet(nn.Module):
                     transition_layers.append(None)
             else:
                 conv3x3s = []
-                for j in range(i + 1 - num_branches_pre):
+                for j in range(i+1-num_branches_pre):
                     inchannels = num_channels_pre_layer[-1]
                     outchannels = num_channels_cur_layer[i] \
-                        if j == i - num_branches_pre else inchannels
+                        if j == i-num_branches_pre else inchannels
                     conv3x3s.append(nn.Sequential(
                         nn.Conv2d(
                             inchannels, outchannels, 3, 2, 1, bias=False),
@@ -391,10 +398,10 @@ class HighResolutionNet(nn.Module):
             )
 
         layers = []
-        layers.append(block(inplanes, planes, stride, downsample))
+        layers.append(block(inplanes, planes, stride, downsample, norm_layer=self.norm_layer))
         inplanes = planes * block.expansion
         for i in range(1, blocks):
-            layers.append(block(inplanes, planes))
+            layers.append(block(inplanes, planes, norm_layer=self.norm_layer))
 
         return nn.Sequential(*layers)
 
@@ -431,7 +438,6 @@ class HighResolutionNet(nn.Module):
 
 
     def forward(self, x):
-        # h, w = x.size(2), x.size(3)
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
@@ -451,7 +457,10 @@ class HighResolutionNet(nn.Module):
         x_list = []
         for i in range(self.stage3_cfg['NUM_BRANCHES']):
             if self.transition2[i] is not None:
-                x_list.append(self.transition2[i](y_list[-1]))
+                if i < self.stage2_cfg['NUM_BRANCHES']:
+                    x_list.append(self.transition2[i](y_list[i]))
+                else:
+                    x_list.append(self.transition2[i](y_list[-1]))
             else:
                 x_list.append(y_list[i])
         y_list = self.stage3(x_list)
@@ -459,17 +468,20 @@ class HighResolutionNet(nn.Module):
         x_list = []
         for i in range(self.stage4_cfg['NUM_BRANCHES']):
             if self.transition3[i] is not None:
-                x_list.append(self.transition3[i](y_list[-1]))
+                if i < self.stage3_cfg['NUM_BRANCHES']:
+                    x_list.append(self.transition3[i](y_list[i]))
+                else:
+                    x_list.append(self.transition3[i](y_list[-1]))
             else:
                 x_list.append(y_list[i])
-        y_list = self.stage4(x_list)
+        x = self.stage4(x_list)
 
         outputs = {}
         # See note [TorchScript super()]
-        outputs['res2'] = y_list[0] # 1/4
-        outputs['res3'] = y_list[1] # 1/8
-        outputs['res4'] = y_list[2] # 1/16
-        outputs['res5'] = y_list[3] # 1/32
+        outputs['res2'] = x[0] # 1/4
+        outputs['res3'] = x[1] # 1/8
+        outputs['res4'] = x[2] # 1/16
+        outputs['res5'] = x[3] # 1/32
 
         return outputs
 
