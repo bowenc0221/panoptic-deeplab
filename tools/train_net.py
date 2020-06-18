@@ -78,7 +78,7 @@ def main():
     distributed = len(gpus) > 1
     device = torch.device('cuda:{}'.format(args.local_rank))
 
-    if distributed:
+    if distributed is False:
         torch.cuda.set_device(args.local_rank)
         torch.distributed.init_process_group(
             backend="nccl", init_method="env://",
