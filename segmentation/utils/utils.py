@@ -2,6 +2,7 @@
 # Utility functions.
 # Written by Bowen Cheng (bcheng9@illinois.edu)
 # ------------------------------------------------------------------------------
+import torch
 
 
 class AverageMeter(object):
