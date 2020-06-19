@@ -27,18 +27,8 @@ from segmentation.data import build_train_loader_from_cfg, build_test_loader_fro
 from segmentation.solver import get_lr_group_id
 from segmentation.utils import save_debug_images
 from segmentation.utils import AverageMeter
+from segmentation.utils import to_cuda, get_module
 from segmentation.utils.utils import get_loss_info_str
-
-def to_cuda(batch, device):
-    if type(batch) == torch.Tensor:
-        batch = batch.to(device)
-    elif type(batch) == dict:
-        for key in batch.keys():
-            batch[key] = to_cuda(batch[key], device)
-    elif type(batch) == list:
-        for i in range(len(batch)):
-            batch[i] = to_cuda(batch[i], device)
-    return batch
 
 
 def parse_args():
@@ -106,8 +96,6 @@ def main():
     start_iter = 0
     max_iter = config.TRAIN.MAX_ITER
     best_param_group_id = get_lr_group_id(optimizer)
-    
-    get_module = lambda model: model.module if distributed else model
 
     # initialize model
     if os.path.isfile(config.MODEL.WEIGHTS):
@@ -148,7 +136,7 @@ def main():
             # data
             start_time = time.time()
             data = next(data_loader_iter)
-            if distributed is False:
+            if not distributed:
                 data = to_cuda(data, device)
             data_time.update(time.time() - start_time)
 
