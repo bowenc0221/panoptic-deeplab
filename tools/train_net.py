@@ -78,7 +78,7 @@ def main():
     distributed = len(gpus) > 1
     device = torch.device('cuda:{}'.format(args.local_rank))
 
-    if distributed is False:
+    if distribute:
         torch.cuda.set_device(args.local_rank)
         torch.distributed.init_process_group(
             backend="nccl", init_method="env://",
@@ -148,7 +148,7 @@ def main():
             # data
             start_time = time.time()
             data = next(data_loader_iter)
-            if distributed:
+            if distributed is False:
                 data = to_cuda(data, device)
             data_time.update(time.time() - start_time)
 
