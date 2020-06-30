@@ -77,8 +77,8 @@ def main():
     model = build_segmentation_model_from_cfg(config)
     logger.info("Model:\n{}".format(model))
 
-    if distributed:
-        model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
+    model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
+    
     model = model.to(device)
 
     if comm.get_world_size() > 1:
