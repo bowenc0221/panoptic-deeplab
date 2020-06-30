@@ -75,6 +75,6 @@ POST_PROCESSING:
   NMS_KERNEL: 7
   TOP_K_INSTANCE: 200
   STUFF_AREA: 2048
-OUTPUT_DIR: "../output/panoptic_deeplab_H48_B8_O4_90K_cityscapes"
+OUTPUT_DIR: "./output/panoptic_deeplab_H48_B8_O4_90K_cityscapes"
 GPUS: (0, 1, 2, 3)
 WORKERS: 1

@@ -142,5 +142,3 @@ inference_test_output
 *.txt
 *.json
 *.diff
-
-scripts/copy_to_teamdrive.sh
