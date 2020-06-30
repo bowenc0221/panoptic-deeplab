@@ -78,7 +78,6 @@ def main():
     logger.info("Model:\n{}".format(model))
 
     model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
-    
     model = model.to(device)
 
     if comm.get_world_size() > 1:
