@@ -2,6 +2,7 @@
 # Utility functions.
 # Written by Bowen Cheng (bcheng9@illinois.edu)
 # ------------------------------------------------------------------------------
+import torch
 
 
 class AverageMeter(object):
@@ -30,3 +31,22 @@ def get_loss_info_str(loss_meter_dict):
         )
 
     return msg
+
+
+def to_cuda(batch, device):
+    if type(batch) == torch.Tensor:
+        batch = batch.to(device)
+    elif type(batch) == dict:
+        for key in batch.keys():
+            batch[key] = to_cuda(batch[key], device)
+    elif type(batch) == list:
+        for i in range(len(batch)):
+            batch[i] = to_cuda(batch[i], device)
+    return batch
+
+
+def get_module(model, distributed):
+    if distributed:
+        return model.module
+    else:
+        return model
