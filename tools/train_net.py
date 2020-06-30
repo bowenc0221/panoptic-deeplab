@@ -27,7 +27,7 @@ from segmentation.data import build_train_loader_from_cfg, build_test_loader_fro
 from segmentation.solver import get_lr_group_id
 from segmentation.utils import save_debug_images
 from segmentation.utils import AverageMeter
-from segmentation.utils.utils import get_loss_info_str, to_cuda, get_module
+from segmentation.utils.utils import get_loss_info_str
 
 
 def parse_args():
@@ -99,12 +99,12 @@ def main():
     # initialize model
     if os.path.isfile(config.MODEL.WEIGHTS):
         model_weights = torch.load(config.MODEL.WEIGHTS)
-        get_module(model, distributed).load_state_dict(model_weights, strict=False)
+        model.module.load_state_dict(model_weights, strict=False)
         logger.info('Pre-trained model from {}'.format(config.MODEL.WEIGHTS))
     elif not config.MODEL.BACKBONE.PRETRAINED:
         if os.path.isfile(config.MODEL.BACKBONE.WEIGHTS):
             pretrained_weights = torch.load(config.MODEL.BACKBONE.WEIGHTS)
-            get_module(model, distributed).backbone.load_state_dict(pretrained_weights, strict=False)
+            model.module.backbone.load_state_dict(pretrained_weights, strict=False)
             logger.info('Pre-trained backbone from {}'.format(config.MODEL.BACKBONE.WEIGHTS))
         else:
             logger.info('No pre-trained weights for backbone, training from scratch.')
@@ -115,7 +115,7 @@ def main():
         if os.path.isfile(model_state_file):
             checkpoint = torch.load(model_state_file)
             start_iter = checkpoint['start_iter']
-            get_module(model, distributed).load_state_dict(checkpoint['state_dict'])
+            model.module.load_state_dict(checkpoint['state_dict'])
             optimizer.load_state_dict(checkpoint['optimizer'])
             lr_scheduler.load_state_dict(checkpoint['lr_scheduler'])
             logger.info('Loaded checkpoint (starting from iter {})'.format(checkpoint['start_iter']))
@@ -135,8 +135,6 @@ def main():
             # data
             start_time = time.time()
             data = next(data_loader_iter)
-            if not distributed:
-                data = to_cuda(data, device)
             data_time.update(time.time() - start_time)
 
             image = data.pop('image')
@@ -157,7 +155,7 @@ def main():
                       'Time: {batch_time.val:.3f}s ({batch_time.avg:.3f}s)\t' \
                       'Data: {data_time.val:.3f}s ({data_time.avg:.3f}s)\t'.format(
                         i + 1, max_iter, lr, batch_time=batch_time, data_time=data_time)
-                msg += get_loss_info_str(get_module(model, distributed).loss_meter_dict)
+                msg += get_loss_info_str(model.module.loss_meter_dict)
                 logger.info(msg)
             if i == 0 or (i + 1) % config.DEBUG.DEBUG_FREQ == 0:
                 if comm.is_main_process() and config.DEBUG.DEBUG:
@@ -176,7 +174,7 @@ def main():
                 if comm.is_main_process():
                     torch.save({
                         'start_iter': i + 1,
-                        'state_dict': get_module(model, distributed).state_dict(),
+                        'state_dict': model.module.state_dict(),
                         'optimizer': optimizer.state_dict(),
                         'lr_scheduler': lr_scheduler.state_dict(),
                     }, os.path.join(config.OUTPUT_DIR, 'checkpoint.pth.tar'))
@@ -185,7 +183,7 @@ def main():
         raise
     finally:
         if comm.is_main_process():
-            torch.save(get_module(model, distributed).state_dict(),
+            torch.save(model.module.state_dict(),
                        os.path.join(config.OUTPUT_DIR, 'final_state.pth'))
         logger.info("Training finished.")
 
