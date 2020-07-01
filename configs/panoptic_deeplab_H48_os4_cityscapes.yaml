@@ -2,16 +2,17 @@ MODEL:
   META_ARCHITECTURE: "panoptic_deeplab"
   BN_MOMENTUM: 0.01
   BACKBONE:
-    NAME: "resnet50"
+    META: "hrnet"
+    NAME: "hrnet48"
     DILATION: (False, False, False)
     PRETRAINED: True
   DECODER:
-    IN_CHANNELS: 2048
+    IN_CHANNELS: 384
     FEATURE_KEY: "res5"
     DECODER_CHANNELS: 256
     ATROUS_RATES: (3, 6, 9)
   PANOPTIC_DEEPLAB:
-    LOW_LEVEL_CHANNELS: (1024, 512, 256)
+    LOW_LEVEL_CHANNELS: (192, 96, 48)
     LOW_LEVEL_KEY: ["res4", "res3", "res2"]
     LOW_LEVEL_CHANNELS_PROJECT: (128, 64, 32)
     INSTANCE:
@@ -23,7 +24,7 @@ MODEL:
       NUM_CLASSES: (1, 2)
       CLASS_KEY: ["center", "offset"]
 DATASET:
-  ROOT: "./datasets/cityscapes"
+  ROOT: ".dataset/original_cityscapes"
   DATASET: "cityscapes_panoptic"
   NUM_CLASSES: 19
   TRAIN_SPLIT: 'train'
@@ -61,7 +62,7 @@ LOSS:
     NAME: "l1"
     WEIGHT: 0.01
 TRAIN:
-  IMS_PER_BATCH: 4
+  IMS_PER_BATCH: 8
   MAX_ITER: 90000
 DEBUG:
   DEBUG: True
@@ -74,6 +75,6 @@ POST_PROCESSING:
   NMS_KERNEL: 7
   TOP_K_INSTANCE: 200
   STUFF_AREA: 2048
-OUTPUT_DIR: "./output/panoptic_deeplab_R50_os32_cityscapes"
-GPUS: (0, 1, 2, 3)
+OUTPUT_DIR: "./output/panoptic_deeplab_H48_B8_O4_90K_cityscapes"
+GPUS: (0, 1, 2, 3, 4, 5, 6, 7)
 WORKERS: 1
