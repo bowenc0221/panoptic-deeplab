@@ -488,9 +488,9 @@ class HighResolutionNet(nn.Module):
 
 def _hrnet(arch, pretrained, progress, **kwargs):
     try:
-        from ...segmentation.config.hrnet_config import MODEL_CONFIGS
+        from ...config.hrnet_config import MODEL_CONFIGS
     except ImportError:
-        logger.error("fail to import the hrnet configuration")
+        from segmentation.config.hrnet_config import MODEL_CONFIGS
     model = HighResolutionNet(MODEL_CONFIGS[arch], **kwargs)
     if pretrained:
         if int(os.environ.get("mapillary_pretrain", 0)):
