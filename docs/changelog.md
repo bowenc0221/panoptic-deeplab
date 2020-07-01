@@ -1,5 +1,8 @@
 ## Changelog
 
+### 07/01/2020 (mm/dd/yyyy)
+- Add more backbones in model zoo.
+
 ### 06/30/2020 (mm/dd/yyyy)
 - Support HRNet backbone.
 

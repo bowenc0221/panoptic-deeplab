@@ -21,15 +21,18 @@ class PanopticTargetGenerator(object):
         ignore_stuff_in_offset: Boolean, whether to ignore stuff region when training the offset branch.
         small_instance_area: Integer, indicates largest area for small instances.
         small_instance_weight: Integer, indicates semantic loss weights for small instances.
+        ignore_crowd_in_semantic: Boolean, whether to ignore crowd region in semantic segmentation branch,
+            crowd region is ignored in the original TensorFlow implementation.
     """
     def __init__(self, ignore_label, rgb2id, thing_list, sigma=8, ignore_stuff_in_offset=False,
-                 small_instance_area=0, small_instance_weight=1):
+                 small_instance_area=0, small_instance_weight=1, ignore_crowd_in_semantic=False):
         self.ignore_label = ignore_label
         self.rgb2id = rgb2id
         self.thing_list = thing_list
         self.ignore_stuff_in_offset = ignore_stuff_in_offset
         self.small_instance_area = small_instance_area
         self.small_instance_weight = small_instance_weight
+        self.ignore_crowd_in_semantic = ignore_crowd_in_semantic
 
         self.sigma = sigma
         size = 6 * sigma + 3
@@ -85,7 +88,11 @@ class PanopticTargetGenerator(object):
         offset_weights = np.zeros_like(panoptic, dtype=np.uint8)
         for seg in segments:
             cat_id = seg["category_id"]
-            semantic[panoptic == seg["id"]] = cat_id
+            if self.ignore_crowd_in_semantic:
+                if not seg['iscrowd']:
+                    semantic[panoptic == seg["id"]] = cat_id
+            else:
+                semantic[panoptic == seg["id"]] = cat_id
             if cat_id in self.thing_list:
                 foreground[panoptic == seg["id"]] = 1
             if not seg['iscrowd']:
