@@ -24,7 +24,7 @@ MODEL:
       NUM_CLASSES: (1, 2)
       CLASS_KEY: ["center", "offset"]
 DATASET:
-  ROOT: ".dataset/original_cityscapes"
+  ROOT: "./datasets/cityscapes"
   DATASET: "cityscapes_panoptic"
   NUM_CLASSES: 19
   TRAIN_SPLIT: 'train'
