@@ -21,6 +21,7 @@ You can claim the task by opening an issue and we can discuss futher.
 Features:
 - [ ] Add a demo code that takes a single image as input and saves visualization outputs.
 - [ ] Support COCO and Mapillary Vistas models.
+- [ ] Optimize post-processing (make it parallel).
 
 Debugging:
 - [ ] AP number is a little bit lower than our original implementation.
