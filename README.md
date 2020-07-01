@@ -22,6 +22,7 @@ Features:
 - [ ] Add a demo code that takes a single image as input and saves visualization outputs.
 - [ ] Support COCO and Mapillary Vistas models.
 - [ ] Optimize post-processing (make it parallel).
+- [ ] Reproduce Xception results.
 
 Debugging:
 - [ ] AP number is a little bit lower than our original implementation.
