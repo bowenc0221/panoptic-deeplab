@@ -24,7 +24,7 @@ MODEL:
       NUM_CLASSES: (1, 2)
       CLASS_KEY: ["center", "offset"]
 DATASET:
-  ROOT: "../../../../dataset/original_cityscapes"
+  ROOT: ".dataset/original_cityscapes"
   DATASET: "cityscapes_panoptic"
   NUM_CLASSES: 19
   TRAIN_SPLIT: 'train'
@@ -76,5 +76,5 @@ POST_PROCESSING:
   TOP_K_INSTANCE: 200
   STUFF_AREA: 2048
 OUTPUT_DIR: "./output/panoptic_deeplab_H48_B8_O4_90K_cityscapes"
-GPUS: (0, 1, 2, 3)
+GPUS: (0, 1, 2, 3, 4, 5, 6, 7)
 WORKERS: 1

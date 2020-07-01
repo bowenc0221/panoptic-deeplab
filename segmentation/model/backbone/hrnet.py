@@ -27,7 +27,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision.models.utils import load_state_dict_from_url
 
-# logger = logging.getLogger(__name__)
 logger = logging.getLogger('hrnet_backbone')
 
 __all__ = ['hrnet18', 'hrnet32', 'hrnet48']
@@ -35,7 +34,6 @@ __all__ = ['hrnet18', 'hrnet32', 'hrnet48']
 
 model_urls = {
     # all the checkpoints come from https://github.com/HRNet/HRNet-Image-Classification
-    'hrnet48_mapillary_pretrain': 'https://iugp9w.bn.files.1drv.com/y4meKwbYGeTGVzN4Hu34uMvpj2mcptA86_ZZnaw1vzrFNQ0d_4WkJVbHacHZyv1rDO1ttm5xVNeSFIs22PNGf1AzZoDHAF6Egkj6czV0iFi_au11QPsRP3HDVTOCxg7I_ahgk5Qu5X-UftbKKqI5fzVjFLMo-yC3j3x2pEBrNrtMq6CqDkm2Z35ZlSO0NMoOGXHWXw0I_Q6E0mlnYzZxAJqJA',
     'hrnet18': 'https://opr0mq.dm.files.1drv.com/y4mIoWpP2n-LUohHHANpC0jrOixm1FZgO2OsUtP2DwIozH5RsoYVyv_De5wDgR6XuQmirMV3C0AljLeB-zQXevfLlnQpcNeJlT9Q8LwNYDwh3TsECkMTWXCUn3vDGJWpCxQcQWKONr5VQWO1hLEKPeJbbSZ6tgbWwJHgHF7592HY7ilmGe39o5BhHz7P9QqMYLBts6V7QGoaKrr0PL3wvvR4w',
     'hrnet32': 'https://opr74a.dm.files.1drv.com/y4mKOuRSNGQQlp6wm_a9bF-UEQwp6a10xFCLhm4bqjDu6aSNW9yhDRM7qyx0vK0WTh42gEaniUVm3h7pg0H-W0yJff5qQtoAX7Zze4vOsqjoIthp-FW3nlfMD0-gcJi8IiVrMWqVOw2N3MbCud6uQQrTaEAvAdNjtjMpym1JghN-F060rSQKmgtq5R-wJe185IyW4-_c5_ItbhYpCyLxdqdEQ',
     'hrnet48': 'https://optgaw.dm.files.1drv.com/y4mWNpya38VArcDInoPaL7GfPMgcop92G6YRkabO1QTSWkCbo7djk8BFZ6LK_KHHIYE8wqeSAChU58NVFOZEvqFaoz392OgcyBrq_f8XGkusQep_oQsuQ7DPQCUrdLwyze_NlsyDGWot0L9agkQ-M_SfNr10ETlCF5R7BdKDZdupmcMXZc-IE3Ysw1bVHdOH4l-XEbEKFAi6ivPUbeqlYkRMQ'
@@ -490,9 +488,9 @@ class HighResolutionNet(nn.Module):
 
 def _hrnet(arch, pretrained, progress, **kwargs):
     try:
-        from .hrnet_config import MODEL_CONFIGS
+        from ...segmentation.config.hrnet_config import MODEL_CONFIGS
     except ImportError:
-        from hrnet_config import MODEL_CONFIGS
+        logger.error("fail to import the hrnet configuration")
     model = HighResolutionNet(MODEL_CONFIGS[arch], **kwargs)
     if pretrained:
         if int(os.environ.get("mapillary_pretrain", 0)):
