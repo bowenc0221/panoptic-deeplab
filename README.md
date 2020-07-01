@@ -10,6 +10,9 @@ etc) to pixels belonging to thing classes.
 This is the **PyTorch re-implementation** of our CVPR2020 paper: 
 [Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation](https://arxiv.org/abs/1911.10194).
 
+## News
+* [2020/06/30] Panoptic-DeepLab now supports [HRNet](https://github.com/HRNet), using HRNet-w48 backbone achieves 63.4% PQ on Cityscapes.
+
 ## Disclaimer
 * This is a **re-implementation** of Panoptic-DeepLab, it is not guaranteed to reproduce all numbers in the paper, please refer to the
 original numbers from [Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation](https://arxiv.org/abs/1911.10194)
