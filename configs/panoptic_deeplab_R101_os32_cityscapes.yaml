@@ -2,7 +2,7 @@ MODEL:
   META_ARCHITECTURE: "panoptic_deeplab"
   BN_MOMENTUM: 0.01
   BACKBONE:
-    NAME: "resnet50"
+    NAME: "resnet101"
     DILATION: (False, False, False)
     PRETRAINED: True
   DECODER:
@@ -74,6 +74,6 @@ POST_PROCESSING:
   NMS_KERNEL: 7
   TOP_K_INSTANCE: 200
   STUFF_AREA: 2048
-OUTPUT_DIR: "./output/panoptic_deeplab_R50_os32_cityscapes"
+OUTPUT_DIR: "./output/panoptic_deeplab_R101_os32_cityscapes"
 GPUS: (0, 1, 2, 3, 4, 5, 6, 7)
 WORKERS: 1

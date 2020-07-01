@@ -5,7 +5,7 @@
 
 import torch
 
-from .backbone import resnet, mobilenet, mnasnet
+from .backbone import resnet, mobilenet, mnasnet, hrnet
 from .meta_arch import DeepLabV3, DeepLabV3Plus, PanopticDeepLab
 from .loss import RegularCE, OhemCE, DeepLabCE, L1Loss, MSELoss, CrossEntropyLoss
 
@@ -85,6 +85,10 @@ def build_segmentation_model_from_cfg(config):
         )
     elif config.MODEL.BACKBONE.META == 'mnasnet':
         backbone = mnasnet.__dict__[config.MODEL.BACKBONE.NAME](
+            pretrained=config.MODEL.BACKBONE.PRETRAINED,
+        )
+    elif config.MODEL.BACKBONE.META == 'hrnet':
+        backbone = hrnet.__dict__[config.MODEL.BACKBONE.NAME](
             pretrained=config.MODEL.BACKBONE.PRETRAINED,
         )
     else:
