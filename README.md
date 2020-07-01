@@ -11,7 +11,20 @@ This is the **PyTorch re-implementation** of our CVPR2020 paper:
 [Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation](https://arxiv.org/abs/1911.10194).
 
 ## News
+* [2020/07/01] More Cityscapes pre-trained backbones in model zoo.
 * [2020/06/30] Panoptic-DeepLab now supports [HRNet](https://github.com/HRNet), using HRNet-w48 backbone achieves 63.4% PQ on Cityscapes. Thanks to @PkuRainBow.
+
+## Community contribution
+If you are interested in contributing to improve this PyTorch implementation of Panoptic-DeepLab, here is a list of TODO tasks.
+You can claim the task by opening an issue and we can discuss futher.
+
+Features:
+- [ ] Add a demo code that takes a single image as input and saves visualization outputs.
+- [ ] Support COCO and Mapillary Vistas models.
+
+Debugging:
+- [ ] AP number is a little bit lower than our original implementation.
+- [ ] Currently there are some problem training ResNet with output stride = 16 (it gets much lower PQ).
 
 ## Disclaimer
 * This is a **re-implementation** of Panoptic-DeepLab, it is not guaranteed to reproduce all numbers in the paper, please refer to the
