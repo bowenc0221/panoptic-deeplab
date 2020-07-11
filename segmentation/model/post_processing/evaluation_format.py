@@ -8,7 +8,7 @@ from collections import OrderedDict
 import numpy as np
 
 
-def get_cityscapes_instance_format(panoptic, sem, ctr_hmp, label_divisor):
+def get_cityscapes_instance_format(panoptic, sem, ctr_hmp, label_divisor, score_type="semantic"):
     """
     Get Cityscapes instance segmentation format.
     Arguments:
@@ -16,6 +16,10 @@ def get_cityscapes_instance_format(panoptic, sem, ctr_hmp, label_divisor):
         sem: A Numpy Ndarray of shape [C, H, W] of raw semantic output.
         ctr_hmp: A Numpy Ndarray of shape [H, W] of raw center heatmap output.
         label_divisor: An Integer, used to convert panoptic id = semantic id * label_divisor + instance_id.
+        score_type: A string, how to calculates confidence scores for instance segmentation.
+            - "semantic": average of semantic segmentation confidence within the instance mask.
+            - "instance": confidence of heatmap at center point of the instance mask.
+            - "both": multiply "semantic" and "instance".
     Returns:
         A List contains instance segmentation in Cityscapes format.
     """
@@ -37,7 +41,19 @@ def get_cityscapes_instance_format(panoptic, sem, ctr_hmp, label_divisor):
 
         sem_scores = sem[train_class_id, ...]
         ins_score = np.mean(sem_scores[mask])
-        ins['score'] = ins_score
+        # mask center point
+        mask_index = np.where(panoptic == pan_lab)
+        center_y, center_x = np.mean(mask_index[0]), np.mean(mask_index[1])
+        ctr_score = ctr_hmp[int(center_y), int(center_x)]
+
+        if score_type == "semantic":
+            ins['score'] = ins_score
+        elif score_type == "instance":
+            ins['score'] = ctr_score
+        elif score_type == "both":
+            ins['score'] = ins_score * ctr_score
+        else:
+            raise ValueError("Unknown confidence score type: {}".format(score_type))
 
         instances.append(ins)
 
