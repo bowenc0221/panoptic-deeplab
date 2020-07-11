@@ -77,6 +77,8 @@ def main():
     model = build_segmentation_model_from_cfg(config)
     logger.info("Model:\n{}".format(model))
 
+    logger.info("Rank of current process: {}. World size: {}".format(comm.get_rank(), comm.get_world_size()))
+
     if distributed:
         model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
     model = model.to(device)

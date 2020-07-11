@@ -142,3 +142,5 @@ inference_test_output
 *.txt
 *.json
 *.diff
+
+*.pth

@@ -293,7 +293,7 @@ def main():
                 # Optional: evaluates instance segmentation.
                 if instance_metric is not None:
                     raw_semantic = F.softmax(out_dict['semantic'][:, :, :image_size[0], :image_size[1]], dim=1)
-                    center_hmp = out_dict['offset'][:, :, :image_size[0], :image_size[1]]
+                    center_hmp = out_dict['center'][:, :, :image_size[0], :image_size[1]]
                     if raw_image_size[0] != image_size[0] or raw_image_size[1] != image_size[1]:
                         raw_semantic = F.interpolate(raw_semantic,
                                                      size=(raw_image_size[0], raw_image_size[1]),
@@ -310,7 +310,8 @@ def main():
                     instances = get_cityscapes_instance_format(panoptic_pred,
                                                                raw_semantic,
                                                                center_hmp,
-                                                               label_divisor=data_loader.dataset.label_divisor)
+                                                               label_divisor=data_loader.dataset.label_divisor,
+                                                               score_type=config.TEST.INSTANCE_SCORE_TYPE)
                     instance_metric.update(instances, image_filename_list[i])
 
                 # Optional: evaluates panoptic segmentation.

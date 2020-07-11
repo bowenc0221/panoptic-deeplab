@@ -277,6 +277,8 @@ _C.TEST.ORACLE_FOREGROUND = False
 _C.TEST.ORACLE_CENTER = False
 _C.TEST.ORACLE_OFFSET = False
 
+_C.TEST.INSTANCE_SCORE_TYPE = "semantic"
+
 # -----------------------------------------------------------------------------
 # POST PROCESSING
 # Panoptic post-processing params
