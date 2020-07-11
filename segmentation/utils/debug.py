@@ -171,9 +171,10 @@ def save_debug_images(dataset, batch_images, batch_targets, batch_outputs, out_d
             pil_image = img.fromarray(grid_image.astype(dtype=np.uint8))
             with open('%s/%s_%d.png' % (out_dir, 'debug_test_images', iteration), mode='wb') as f:
                 pil_image.save(f, 'PNG')
-            pil_image = img.fromarray(grid_target.astype(dtype=np.uint8))
-            with open('%s/%s_%d.png' % (out_dir, 'debug_test_targets', iteration), mode='wb') as f:
-                pil_image.save(f, 'PNG')
+            if grid_target.size:
+                pil_image = img.fromarray(grid_target.astype(dtype=np.uint8))
+                with open('%s/%s_%d.png' % (out_dir, 'debug_test_targets', iteration), mode='wb') as f:
+                    pil_image.save(f, 'PNG')
             pil_image = img.fromarray(grid_output.astype(dtype=np.uint8))
             with open('%s/%s_%d.png' % (out_dir, 'debug_test_outputs', iteration), mode='wb') as f:
                 pil_image.save(f, 'PNG')
