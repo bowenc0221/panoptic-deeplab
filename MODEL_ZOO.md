@@ -28,6 +28,7 @@ For ResNet-50 model, 11G memory should be enough. You will need larger memory fo
 Note:
 - R50/R101: ResNet-50 and ResNet-101
 - X101: ResNext-101
+- 2 AP numbers refer to different ways to calculate condidence score: [semantic](https://github.com/bowenc0221/panoptic-deeplab/blob/9225f83cba48985263775635f0805f482de6aeeb/segmentation/model/post_processing/evaluation_format.py#L49) / [semantic x instance](https://github.com/bowenc0221/panoptic-deeplab/blob/9225f83cba48985263775635f0805f482de6aeeb/segmentation/model/post_processing/evaluation_format.py#L53)
 
 
 
@@ -38,6 +39,7 @@ Note:
 
 Note:
 - MBNV2-1.0: MobileNetV2 with width multiplier 1.0
+- 2 AP numbers refer to different ways to calculate condidence score: [semantic](https://github.com/bowenc0221/panoptic-deeplab/blob/9225f83cba48985263775635f0805f482de6aeeb/segmentation/model/post_processing/evaluation_format.py#L49) / [semantic x instance](https://github.com/bowenc0221/panoptic-deeplab/blob/9225f83cba48985263775635f0805f482de6aeeb/segmentation/model/post_processing/evaluation_format.py#L53)
 
 
 
@@ -55,4 +57,5 @@ We use Pytorch1.5 in all of our experiments. The docker is [rainbowsecret/pytorc
 
 Note:
 - H48: HRNet with width 48
+- 2 AP numbers refer to different ways to calculate condidence score: [semantic](https://github.com/bowenc0221/panoptic-deeplab/blob/9225f83cba48985263775635f0805f482de6aeeb/segmentation/model/post_processing/evaluation_format.py#L49) / [semantic x instance](https://github.com/bowenc0221/panoptic-deeplab/blob/9225f83cba48985263775635f0805f482de6aeeb/segmentation/model/post_processing/evaluation_format.py#L53)
 
