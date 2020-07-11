@@ -19,7 +19,7 @@ If you are interested in contributing to improve this PyTorch implementation of 
 You can claim the task by opening an issue and we can discuss futher.
 
 Features:
-- [ ] Add a demo code that takes a single image as input and saves visualization outputs.
+- [X] Add a demo code that takes a single image as input and saves visualization outputs (#22).
 - [ ] Support COCO and Mapillary Vistas models.
 - [ ] Support multi-node distributed training.
 - [ ] Support mixed precision (fp16) training.
