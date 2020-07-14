@@ -18,9 +18,14 @@ all the configs provided in panoptic-deeplab.
 To train a model with "train_net.py", first
 setup the corresponding datasets following
 [datasets/README.md](https://github.com/bowenc0221/panoptic-deeplab/blob/master/datasets/README.md),
-then run:
+then run the following command with NUM_GPUS gpus:
 ```bash
-python -m torch.distributed.launch --nproc_per_node=4 tools/train_net.py --cfg configs/CONFIG_FILE
+python -m torch.distributed.launch --nproc_per_node=NUM_GPUs tools/train_net.py --cfg configs/CONFIG_FILE
+```
+
+To train a model with a single GPU:
+```bash
+python tools/train_net.py --cfg configs/CONFIG_FILE TRAIN.IMS_PER_BATCH 1 GPUS '(0, )'
 ```
 
 To evaluate a model's performance, use
