@@ -32,6 +32,18 @@ Note:
 
 
 
+##### Xception models
+| Name    | PQ   | SQ   | RQ   | AP   | mIoU | Model |
+| ------- | ---- | ---- | ---- | ---- | ---- | ----- |
+| [X65-os32](configs/panoptic_deeplab_X65_os32_cityscapes_lr_x10.yaml)| 61.8 | 81.1 | 75.2 | 30.9 / 31.7 | 79.6 | [Google Drive]() |
+
+Note:
+- X65: Xception-65
+- 2 AP numbers refer to different ways to calculate condidence score: [semantic](https://github.com/bowenc0221/panoptic-deeplab/blob/9225f83cba48985263775635f0805f482de6aeeb/segmentation/model/post_processing/evaluation_format.py#L49) / [semantic x instance](https://github.com/bowenc0221/panoptic-deeplab/blob/9225f83cba48985263775635f0805f482de6aeeb/segmentation/model/post_processing/evaluation_format.py#L53)
+
+
+
+
 ##### Mobile models
 | Name    | PQ   | SQ   | RQ   | AP   | mIoU | Model |
 | ------- | ---- | ---- | ---- | ---- | ---- | ----- |

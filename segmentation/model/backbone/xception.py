@@ -104,11 +104,10 @@ class Xception65(nn.Module):
         if len(replace_stride_with_dilation) != 3:
             raise ValueError("replace_stride_with_dilation should be None "
                              "or a 3-element tuple, got {}".format(replace_stride_with_dilation))
-        if replace_stride_with_dilation[0]:
-            assert replace_stride_with_dilation[1] and replace_stride_with_dilation[2]
-            output_stride = 8
-        elif replace_stride_with_dilation[1]:
+        if replace_stride_with_dilation[1]:
             assert replace_stride_with_dilation[2]
+            output_stride = 8
+        elif replace_stride_with_dilation[2]:
             output_stride = 16
         else:
             output_stride = 32

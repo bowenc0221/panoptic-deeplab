@@ -41,7 +41,7 @@ DATASET:
   SMALL_INSTANCE_AREA: 4096
   SMALL_INSTANCE_WEIGHT: 3
 SOLVER:
-  BASE_LR: 0.00005
+  BASE_LR: 0.0005
   WEIGHT_DECAY: 0.0
   WEIGHT_DECAY_NORM: 0.0
   BIAS_LR_FACTOR: 1.0
@@ -75,6 +75,6 @@ POST_PROCESSING:
   NMS_KERNEL: 7
   TOP_K_INSTANCE: 200
   STUFF_AREA: 2048
-OUTPUT_DIR: "./output/panoptic_deeplab_X65_os32_cityscapes"
+OUTPUT_DIR: "./output/panoptic_deeplab_X65_os32_cityscapes_lr_x10"
 GPUS: (0, 1, 2, 3, 4, 5, 6, 7)
 WORKERS: 1
