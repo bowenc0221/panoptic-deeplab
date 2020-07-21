@@ -5,7 +5,7 @@
 
 import torch
 
-from .backbone import resnet, mobilenet, mnasnet, hrnet
+from .backbone import resnet, mobilenet, mnasnet, hrnet, xception
 from .meta_arch import DeepLabV3, DeepLabV3Plus, PanopticDeepLab
 from .loss import RegularCE, OhemCE, DeepLabCE, L1Loss, MSELoss, CrossEntropyLoss
 
@@ -90,6 +90,11 @@ def build_segmentation_model_from_cfg(config):
     elif config.MODEL.BACKBONE.META == 'hrnet':
         backbone = hrnet.__dict__[config.MODEL.BACKBONE.NAME](
             pretrained=config.MODEL.BACKBONE.PRETRAINED,
+        )
+    elif config.MODEL.BACKBONE.META == 'xception':
+        backbone = xception.__dict__[config.MODEL.BACKBONE.NAME](
+            pretrained=config.MODEL.BACKBONE.PRETRAINED,
+            replace_stride_with_dilation=model_cfg[config.MODEL.META_ARCHITECTURE]['replace_stride_with_dilation']
         )
     else:
         raise ValueError('Unknown meta backbone {}, please first implement it.'.format(config.MODEL.BACKBONE.META))
