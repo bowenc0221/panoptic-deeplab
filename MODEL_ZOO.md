@@ -35,7 +35,7 @@ Note:
 ##### Xception models
 | Name    | PQ   | SQ   | RQ   | AP   | mIoU | Model |
 | ------- | ---- | ---- | ---- | ---- | ---- | ----- |
-| [X65-os32](configs/panoptic_deeplab_X65_os32_cityscapes_lr_x10.yaml)| 61.8 | 81.1 | 75.2 | 30.9 / 31.7 | 79.6 | [Google Drive]() |
+| [X65-os32](configs/panoptic_deeplab_X65_os32_cityscapes_lr_x10.yaml)| 61.8 | 81.1 | 75.2 | 30.9 / 31.7 | 79.6 | [Google Drive](https://drive.google.com/file/d/1TjN5gUyzA8Q2HqnP6jBu62GRTyAntQeQ/view?usp=sharing) |
 
 Note:
 - X65: Xception-65
