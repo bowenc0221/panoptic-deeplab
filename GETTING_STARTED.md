@@ -11,6 +11,15 @@ python tools/demo.py --cfg configs/CONFIG_FILE \
     TEST.MODEL_FILE YOUR_DOWNLOAD_MODEL_FILE
 ```
 
+If you want to merge image with prediction, you can add a `--merge-image` flag:
+```bash
+python tools/demo.py --cfg configs/CONFIG_FILE \
+    --input-files PATH_TO_INPUT_FILES \
+    --output-dir PATH_TO_OUTPUT_DIR \
+    --merge-image \
+    TEST.MODEL_FILE YOUR_DOWNLOAD_MODEL_FILE
+```
+
 ### Training & Evaluation in Command Line
 We provide a script in "tools/train_net.py", that is made to train
 all the configs provided in panoptic-deeplab.
