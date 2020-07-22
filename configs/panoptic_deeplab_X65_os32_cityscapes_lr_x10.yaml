@@ -1,0 +1,80 @@
+MODEL:
+  META_ARCHITECTURE: "panoptic_deeplab"
+  BN_MOMENTUM: 0.001
+  BACKBONE:
+    META: "xception"
+    NAME: "xception65"
+    DILATION: (False, False, False)
+    PRETRAINED: True
+  DECODER:
+    IN_CHANNELS: 2048
+    FEATURE_KEY: "res5"
+    DECODER_CHANNELS: 256
+    ATROUS_RATES: (3, 6, 9)
+  PANOPTIC_DEEPLAB:
+    LOW_LEVEL_CHANNELS: (728, 728, 256)
+    LOW_LEVEL_KEY: ["res4", "res3", "res2"]
+    LOW_LEVEL_CHANNELS_PROJECT: (128, 64, 32)
+    INSTANCE:
+      ENABLE: True
+      LOW_LEVEL_CHANNELS_PROJECT: (64, 32, 16)
+      DECODER_CHANNELS: 128
+      HEAD_CHANNELS: 32
+      ASPP_CHANNELS: 256
+      NUM_CLASSES: (1, 2)
+      CLASS_KEY: ["center", "offset"]
+DATASET:
+  ROOT: "./datasets/cityscapes"
+  DATASET: "cityscapes_panoptic"
+  NUM_CLASSES: 19
+  TRAIN_SPLIT: 'train'
+  TEST_SPLIT: 'val'
+  CROP_SIZE: (1025, 2049)
+  MIRROR: True
+  MIN_SCALE: 0.5
+  MAX_SCALE: 2.0
+  SCALE_STEP_SIZE: 0.1
+  MEAN: (0.5, 0.5, 0.5)
+  STD: (0.5, 0.5, 0.5)
+  SEMANTIC_ONLY: False
+  IGNORE_STUFF_IN_OFFSET: True
+  SMALL_INSTANCE_AREA: 4096
+  SMALL_INSTANCE_WEIGHT: 3
+SOLVER:
+  BASE_LR: 0.0005
+  WEIGHT_DECAY: 0.0
+  WEIGHT_DECAY_NORM: 0.0
+  BIAS_LR_FACTOR: 1.0
+  WEIGHT_DECAY_BIAS: 0.0
+  OPTIMIZER: "adam"
+  LR_SCHEDULER_NAME: "WarmupPolyLR"
+  WARMUP_ITERS: 0
+LOSS:
+  SEMANTIC:
+    NAME: "hard_pixel_mining"
+    IGNORE: 255
+    TOP_K_PERCENT: 0.2
+    WEIGHT: 1.0
+  CENTER:
+    NAME: "mse"
+    WEIGHT: 200.0
+  OFFSET:
+    NAME: "l1"
+    WEIGHT: 0.01
+TRAIN:
+  IMS_PER_BATCH: 8
+  MAX_ITER: 90000
+DEBUG:
+  DEBUG: True
+  DEBUG_FREQ: 100
+TEST:
+  EVAL_INSTANCE: True
+  EVAL_PANOPTIC: True
+POST_PROCESSING:
+  CENTER_THRESHOLD: 0.1
+  NMS_KERNEL: 7
+  TOP_K_INSTANCE: 200
+  STUFF_AREA: 2048
+OUTPUT_DIR: "./output/panoptic_deeplab_X65_os32_cityscapes_lr_x10"
+GPUS: (0, 1, 2, 3, 4, 5, 6, 7)
+WORKERS: 1
