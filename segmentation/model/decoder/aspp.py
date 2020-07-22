@@ -29,8 +29,11 @@ class ASPPPooling(nn.Module):
             nn.ReLU()
         )
 
-    def set_image_pooling(self, pool_size):
-        self.aspp_pooling[0] = nn.AvgPool2d(kernel_size=pool_size, stride=1)
+    def set_image_pooling(self, pool_size=None):
+        if pool_size is None:
+            self.aspp_pooling[0] = nn.AdaptiveAvgPool2d(1)
+        else:
+            self.aspp_pooling[0] = nn.AvgPool2d(kernel_size=pool_size, stride=1)
 
     def forward(self, x):
         size = x.shape[-2:]

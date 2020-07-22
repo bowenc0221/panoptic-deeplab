@@ -31,6 +31,7 @@ from segmentation.evaluation import (
     SemanticEvaluator, CityscapesInstanceEvaluator, CityscapesPanopticEvaluator,
     COCOInstanceEvaluator, COCOPanopticEvaluator)
 from segmentation.model.post_processing import get_cityscapes_instance_format
+from segmentation.utils.test_utils import multi_scale_inference
 
 
 def parse_args():
@@ -176,6 +177,13 @@ def main():
     if config.TEST.DEBUG:
         debug_out_dir = os.path.join(config.OUTPUT_DIR, 'debug_test')
         PathManager.mkdirs(debug_out_dir)
+    
+    if not config.TEST.TEST_TIME_AUGMENTATION:
+        if config.TEST.FLIP_TEST or len(config.TEST.SCALE_LIST) > 1:
+            config.TEST.TEST_TIME_AUGMENTATION = True
+            logger.warning(
+                "Override TEST.TEST_TIME_AUGMENTATION to True because test time augmentation detected."
+                "Please check your config file if you think it is a mistake.")
 
     # Train loop.
     try:
@@ -200,8 +208,12 @@ def main():
                 data_time.update(time.time() - start_time)
 
                 start_time = time.time()
-                # out_dict = model(image, data)
-                out_dict = model(image)
+                if config.TEST.TEST_TIME_AUGMENTATION:
+                    raw_image = data['raw_image'][0].cpu().numpy()
+                    out_dict = multi_scale_inference(config, model, raw_image, device)
+                else:
+                    out_dict = model(image)
+
                 torch.cuda.synchronize(device)
                 net_time.update(time.time() - start_time)
 
