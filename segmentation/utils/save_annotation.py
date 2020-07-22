@@ -114,7 +114,8 @@ def save_annotation(label,
                     add_colormap=True,
                     normalize_to_unit_values=False,
                     scale_values=False,
-                    colormap=None):
+                    colormap=None,
+                    image=None):
     """Saves the given label to image on disk.
     Args:
         label: The numpy array to be saved. The data will be converted
@@ -125,6 +126,7 @@ def save_annotation(label,
         normalize_to_unit_values: Boolean, normalize the input values to [0, 1].
         scale_values: Boolean, scale the input values to [0, 255] for visualization.
         colormap: A colormap for visualizing segmentation results.
+        image: merge label with image if provided
     """
     # Add colormap for visualizing the prediction.
     if add_colormap:
@@ -140,6 +142,9 @@ def save_annotation(label,
 
     if scale_values:
         colored_label = 255. * colored_label
+
+    if image is not None:
+        colored_label = 0.5 * colored_label + 0.5 * image
 
     pil_image = img.fromarray(colored_label.astype(dtype=np.uint8))
     with open('%s/%s.png' % (save_dir, filename), mode='wb') as f:
@@ -171,7 +176,8 @@ def label_to_color_image(label, colormap=None):
 def save_instance_annotation(label,
                              save_dir,
                              filename,
-                             stuff_id=0):
+                             stuff_id=0,
+                             image=None):
     """Saves the given label to image on disk.
     Args:
         label: The numpy array to be saved. The data will be converted
@@ -179,6 +185,7 @@ def save_instance_annotation(label,
         save_dir: String, the directory to which the results will be saved.
         filename: String, the image filename.
         stuff_id: Integer, id that not want to plot.
+        image: merge label with image if provided
     """
     # Add colormap for visualizing the prediction.
     ids = np.unique(label)
@@ -192,6 +199,9 @@ def save_instance_annotation(label,
             colormap[i, :] = np.array([0, 0, 0])
     colored_label = colormap[label]
 
+    if image is not None:
+        colored_label = 0.5 * colored_label + 0.5 * image
+
     pil_image = img.fromarray(colored_label.astype(dtype=np.uint8))
     with open('%s/%s.png' % (save_dir, filename), mode='wb') as f:
         pil_image.save(f, 'PNG')
@@ -201,7 +211,8 @@ def save_panoptic_annotation(label,
                              save_dir,
                              filename,
                              label_divisor,
-                             colormap=None):
+                             colormap=None,
+                             image=None):
     """Saves the given label to image on disk.
     Args:
         label: The numpy array to be saved. The data will be converted
@@ -210,6 +221,7 @@ def save_panoptic_annotation(label,
         filename: String, the image filename.
         label_divisor: An Integer, used to convert panoptic id = semantic id * label_divisor + instance_id.
         colormap: A colormap for visualizing segmentation results.
+        image: merge label with image if provided
     """
     if colormap is None:
         raise ValueError('Expect a valid colormap.')
@@ -237,6 +249,9 @@ def save_panoptic_annotation(label,
                     taken_colors.add(color)
                     break
         colored_label[mask] = color
+    
+    if image is not None:
+        colored_label = 0.5 * colored_label + 0.5 * image
 
     pil_image = img.fromarray(colored_label.astype(dtype=np.uint8))
     with open('%s/%s.png' % (save_dir, filename), mode='wb') as f:
