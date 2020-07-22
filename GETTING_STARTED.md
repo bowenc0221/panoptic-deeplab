@@ -41,3 +41,11 @@ To evaluate a model's performance, use
 ```bash
 python tools/test_net_single_core.py --cfg configs/CONFIG_FILE
 ```
+
+To evaluate a model with test time augmentation (e.g. flip and multi-scale), use
+```bash
+python tools/test_net_single_core.py --cfg configs/CONFIG_FILE \
+    TEST.TEST_TIME_AUGMENTATION True \
+    TEST.FLIP_TEST True \
+    TEST.SCALE_LIST '[0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2]'
+```
