@@ -34,6 +34,39 @@ from segmentation.utils import AverageMeter
 from segmentation.data import build_test_loader_from_cfg
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description='Test segmentation network with single process')
+
+    parser.add_argument('--cfg',
+                        help='experiment configure file name',
+                        required=True,
+                        type=str)
+    parser.add_argument('--input-files',
+                        help='input files, could be image, image list or video',
+                        required=True,
+                        type=str)
+    parser.add_argument('--output-dir',
+                        help='output directory',
+                        required=True,
+                        type=str)
+    parser.add_argument('--extension',
+                        help='file extension if input is image list',
+                        default='.png',
+                        type=str)
+    parser.add_argument('--merge-image',
+                        help='merge image with predictions',
+                        action='store_true')
+    parser.add_argument('opts',
+                        help="Modify config options using the command-line",
+                        default=None,
+                        nargs=argparse.REMAINDER)
+
+    args = parser.parse_args()
+    update_config(config, args)
+
+    return args
+
+
 def read_image(file_name, format=None):
     image = Image.open(file_name)
 
@@ -59,34 +92,39 @@ def read_image(file_name, format=None):
     return image
 
 
-def parse_args():
-    parser = argparse.ArgumentParser(description='Test segmentation network with single process')
+class CityscapesMeta(object):
+    def __init__(self):
+        self.thing_list = [11, 12, 13, 14, 15, 16, 17, 18]
+        self.label_divisor = 1000
+        self.ignore_label = 255
 
-    parser.add_argument('--cfg',
-                        help='experiment configure file name',
-                        required=True,
-                        type=str)
-    parser.add_argument('--input-files',
-                        help='input files, could be image, image list or video',
-                        required=True,
-                        type=str)
-    parser.add_argument('--output-dir',
-                        help='output directory',
-                        required=True,
-                        type=str)
-    parser.add_argument('--extension',
-                        help='file extension if input is image list',
-                        default='.png',
-                        type=str)
-    parser.add_argument('opts',
-                        help="Modify config options using the command-line",
-                        default=None,
-                        nargs=argparse.REMAINDER)
-
-    args = parser.parse_args()
-    update_config(config, args)
-
-    return args
+    @staticmethod
+    def create_label_colormap():
+        """Creates a label colormap used in CITYSCAPES segmentation benchmark.
+        Returns:
+            A colormap for visualizing segmentation results.
+        """
+        colormap = np.zeros((256, 3), dtype=np.uint8)
+        colormap[0] = [128, 64, 128]
+        colormap[1] = [244, 35, 232]
+        colormap[2] = [70, 70, 70]
+        colormap[3] = [102, 102, 156]
+        colormap[4] = [190, 153, 153]
+        colormap[5] = [153, 153, 153]
+        colormap[6] = [250, 170, 30]
+        colormap[7] = [220, 220, 0]
+        colormap[8] = [107, 142, 35]
+        colormap[9] = [152, 251, 152]
+        colormap[10] = [70, 130, 180]
+        colormap[11] = [220, 20, 60]
+        colormap[12] = [255, 0, 0]
+        colormap[13] = [0, 0, 142]
+        colormap[14] = [0, 0, 70]
+        colormap[15] = [0, 60, 100]
+        colormap[16] = [0, 80, 100]
+        colormap[17] = [0, 0, 230]
+        colormap[18] = [119, 11, 32]
+        return colormap
 
 
 def main():
@@ -123,9 +161,19 @@ def main():
     logger.info("Model:\n{}".format(model))
     model = model.to(device)
 
-    # build data_loader
-    # TODO: still need it for thing_list
-    data_loader = build_test_loader_from_cfg(config)
+    try:
+        # build data_loader
+        data_loader = build_test_loader_from_cfg(config)
+        meta_dataset = data_loader.dataset
+        save_intermediate_outputs = True
+    except:
+        logger.warning(
+            "Cannot build data loader, using default meta data. This will disable visualizing intermediate outputs")
+        if 'cityscapes' in config.DATASET.DATASET:
+            meta_dataset = CityscapesMeta()
+        else:
+            raise ValueError("Unsupported dataset: {}".format(config.DATASET.DATASET))
+        save_intermediate_outputs = False
 
     # load model
     if config.TEST.MODEL_FILE:
@@ -202,19 +250,6 @@ def main():
         ]
     )
 
-    # logger.info("Warmup GPU.")
-    # with torch.no_grad():
-    #     for _ in range(10):
-    #         if isinstance(input_list[0], str):
-    #             # load image
-    #             image = read_image(input_list[0], 'RGB')
-    #         else:
-    #             NotImplementedError("Inference on video is not supported yet.")
-            
-    #         image, _ = transforms(image, None)
-    #         model(image.unsqueeze(0).to(device))
-    #         torch.cuda.synchronize(device)
-
     net_time = AverageMeter()
     post_time = AverageMeter()
     try:
@@ -222,19 +257,19 @@ def main():
             for i, fname in enumerate(input_list):
                 if isinstance(fname, str):
                     # load image
-                    image = read_image(fname, 'RGB')
+                    raw_image = read_image(fname, 'RGB')
                 else:
                     NotImplementedError("Inference on video is not supported yet.")
                 
                 # pad image
-                raw_shape = image.shape[:2]
+                raw_shape = raw_image.shape[:2]
                 raw_h = raw_shape[0]
                 raw_w = raw_shape[1]
                 new_h = (raw_h + 31) // 32 * 32 + 1
                 new_w = (raw_w + 31) // 32 * 32 + 1
                 input_image = np.zeros((new_h, new_w, 3), dtype=np.uint8)
                 input_image[:, :] = config.DATASET.MEAN
-                input_image[:raw_h, :raw_w, :] = image
+                input_image[:raw_h, :raw_w, :] = raw_image
 
                 image, _ = transforms(input_image, None)
                 image = image.unsqueeze(0).to(device)
@@ -253,12 +288,12 @@ def main():
                     semantic_pred,
                     out_dict['center'],
                     out_dict['offset'],
-                    thing_list=data_loader.dataset.thing_list,
-                    label_divisor=data_loader.dataset.label_divisor,
+                    thing_list=meta_dataset.thing_list,
+                    label_divisor=meta_dataset.label_divisor,
                     stuff_area=config.POST_PROCESSING.STUFF_AREA,
                     void_label=(
-                            data_loader.dataset.label_divisor *
-                            data_loader.dataset.ignore_label),
+                            meta_dataset.label_divisor *
+                            meta_dataset.ignore_label),
                     threshold=config.POST_PROCESSING.CENTER_THRESHOLD,
                     nms_kernel=config.POST_PROCESSING.NMS_KERNEL,
                     top_k=config.POST_PROCESSING.TOP_K_INSTANCE,
@@ -279,36 +314,46 @@ def main():
                 semantic_pred = semantic_pred[:raw_h, :raw_w]
                 panoptic_pred = panoptic_pred[:raw_h, :raw_w]
 
-                # Raw outputs
-                save_debug_images(
-                    dataset=data_loader.dataset,
-                    batch_images=image,
-                    batch_targets={},
-                    batch_outputs=out_dict,
-                    out_dir=raw_out_dir,
-                    iteration=i,
-                    target_keys=[],
-                    output_keys=['semantic', 'center', 'offset'],
-                    is_train=False,
-                )
+                if save_intermediate_outputs:
+                    # Raw outputs
+                    save_debug_images(
+                        dataset=meta_dataset,
+                        batch_images=image,
+                        batch_targets={},
+                        batch_outputs=out_dict,
+                        out_dir=raw_out_dir,
+                        iteration=i,
+                        target_keys=[],
+                        output_keys=['semantic', 'center', 'offset'],
+                        is_train=False,
+                    )
 
                 save_annotation(semantic_pred, semantic_out_dir, 'semantic_pred_%d' % i,
-                                add_colormap=True, colormap=data_loader.dataset.create_label_colormap())
-                pan_to_sem = panoptic_pred // data_loader.dataset.label_divisor
-                save_annotation(pan_to_sem, semantic_out_dir, 'pan_to_sem_pred_%d' % i,
-                                add_colormap=True, colormap=data_loader.dataset.create_label_colormap())
-                ins_id = panoptic_pred % data_loader.dataset.label_divisor
+                                add_colormap=True, colormap=meta_dataset.create_label_colormap(),
+                                image=raw_image if args.merge_image else None)
+                pan_to_sem = panoptic_pred // meta_dataset.label_divisor
+                save_annotation(pan_to_sem, semantic_out_dir, 'panoptic_to_semantic_pred_%d' % i,
+                                add_colormap=True, colormap=meta_dataset.create_label_colormap(),
+                                image=raw_image if args.merge_image else None)
+                ins_id = panoptic_pred % meta_dataset.label_divisor
                 pan_to_ins = panoptic_pred.copy()
                 pan_to_ins[ins_id == 0] = 0
-                save_instance_annotation(pan_to_ins, instance_out_dir, 'pan_to_ins_pred_%d' % i)
+                save_instance_annotation(pan_to_ins, instance_out_dir, 'panoptic_to_instance_pred_%d' % i,
+                                         image=raw_image if args.merge_image else None)
                 save_panoptic_annotation(panoptic_pred, panoptic_out_dir, 'panoptic_pred_%d' % i,
-                                         label_divisor=data_loader.dataset.label_divisor,
-                                         colormap=data_loader.dataset.create_label_colormap())
+                                         label_divisor=meta_dataset.label_divisor,
+                                         colormap=meta_dataset.create_label_colormap(),
+                                         image=raw_image if args.merge_image else None)
     except Exception:
         logger.exception("Exception during demo:")
         raise
     finally:
         logger.info("Demo finished.")
+        if save_intermediate_outputs:
+            logger.info("Intermediate outputs saved to {}".format(raw_out_dir))
+        logger.info("Semantic predictions saved to {}".format(semantic_out_dir))
+        logger.info("Instance predictions saved to {}".format(instance_out_dir))
+        logger.info("Panoptic predictions saved to {}".format(panoptic_out_dir))
 
 
 if __name__ == '__main__':
