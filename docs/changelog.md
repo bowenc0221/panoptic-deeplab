@@ -2,6 +2,7 @@
 
 ### 07/21/2020 (mm/dd/yyyy)
 - Add Xception-65 backbones in model zoo.
+- Support test time augmentation (flip and multi-scale test)
 
 ### 07/11/2020 (mm/dd/yyyy)
 - Add MobileNetV2 backbones in model zoo.
