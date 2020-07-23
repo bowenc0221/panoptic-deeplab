@@ -35,7 +35,7 @@ from segmentation.data import build_test_loader_from_cfg
 
 
 IMAGE_EXT = ['.png', '.jpg', '.jpeg']
-VIDEO_EXT = ['.mpeg', '.mpg']
+VIDEO_EXT = ['.mpeg', '.mpg', '.mov']
 
 
 def parse_args():
@@ -210,36 +210,26 @@ def main():
                 # video file
                 # initialize the video stream and pointer to output video file
                 vs = cv2.VideoCapture(args.input_files)
-                
-                # try to determine the total number of frames in the video file
                 try:
-                    prop =  cv2.cv.CV_CAP_PROP_FRAME_COUNT if imutils.is_cv2() \
-                        else cv2.CAP_PROP_FRAME_COUNT
-                    total = int(vs.get(prop))
-                    logger.info("{} frames in video".format(total))
-
                     # loop over frames from the video file stream
                     while True:
                         # read the next frame from the file
                         (grabbed, frame) = vs.read()
-                        input_list.append(frame[:, :, ::-1])
-                        
-
-                        # if the frame was not grabbed, then we have reached the end
-                        # of the stream
+                        # if the frame was not grabbed, then we have reached the end of the stream
                         if not grabbed:
                             break
-                    
+                        input_list.append(frame[:, :, ::-1])
                     vs.release()
-                    logger.info("Finished processing of video into frames")
+                    logger.info("Finished processing of {} frames".format(len(input_list)))
+                    input_list = input_list[:30]
                 
                 # an error occurred while trying to determine the total
                 # number of frames in the video file
                 except:
                     raise ValueError(
-                "Could not determine # of frames in video."
+                "Could not load video. "
                 "Please check if OpenCV works for your video extension {}".format(ext))
-                    total = -1
+                    # total = -1
             else:
                 raise ValueError("Unsupported extension: {}.".format(ext))
         else:
@@ -419,25 +409,25 @@ def main():
                     pil_image.save(f, 'PNG')
         else:
             logger.info("Saving video results...")
-            fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
             frame_size = (semantic_image_list[0].shape[1], semantic_image_list[0].shape[0])
             # semantic
             writer = cv2.VideoWriter(
-                '%s/%s.mpeg' % (semantic_out_dir, 'semantic_pred_video'), fourcc, 30, frame_size, True)
+                '%s/%s.%s' % (semantic_out_dir, 'semantic_pred_video', 'mpeg'), fourcc, 30, frame_size, True)
             for semantic_image in semantic_image_list:
-                writer.write(semantic_image[:, :, ::-1])
+                writer.write(semantic_image[:, :, ::-1].astype(dtype=np.uint8))
             writer.release()
             # instance
             writer = cv2.VideoWriter(
-                '%s/%s.mpeg' % (instance_out_dir, 'instance_pred_video'), fourcc, 30, frame_size, True)
+                '%s/%s.%s' % (instance_out_dir, 'instance_pred_video', 'mpeg'), fourcc, 30, frame_size, True)
             for instance_image in instance_image_list:
-                writer.write(instance_image[:, :, ::-1])
+                writer.write(instance_image[:, :, ::-1].astype(dtype=np.uint8))
             writer.release()
             # panoptic
             writer = cv2.VideoWriter(
-                '%s/%s.mpeg' % (panoptic_out_dir, 'panoptic_pred_video'), fourcc, 30, frame_size, True)
+                '%s/%s.%s' % (panoptic_out_dir, 'panoptic_pred_video', 'mpeg'), fourcc, 30, frame_size, True)
             for panoptic_image in panoptic_image_list:
-                writer.write(panoptic_image[:, :, ::-1])
+                writer.write(panoptic_image[:, :, ::-1].astype(dtype=np.uint8))
             writer.release()
         logger.info("Semantic predictions saved to {}".format(semantic_out_dir))
         logger.info("Instance predictions saved to {}".format(instance_out_dir))
