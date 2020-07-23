@@ -60,6 +60,9 @@ def parse_args():
     parser.add_argument('--merge-image',
                         help='merge image with predictions',
                         action='store_true')
+    parser.add_argument('--save-video-frames-to-image',
+                        help='save each frame of the video to image',
+                        action='store_true')
     parser.add_argument('opts',
                         help="Modify config options using the command-line",
                         default=None,
@@ -209,19 +212,29 @@ def main():
             elif ext in VIDEO_EXT:
                 # video file
                 # initialize the video stream and pointer to output video file
-                vs = cv2.VideoCapture(args.input_files)
+                video = cv2.VideoCapture(args.input_files)
+                video_width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
+                video_height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                frames_per_second = video.get(cv2.CAP_PROP_FPS)
+                num_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
+                if video.isOpened():
+                    logger.info("Successfully load video {}. "
+                                "Video info:\n"
+                                "\t{} frames {} fps\n"
+                                "\theight: {} width: {}".format(
+                                    args.input_files, num_frames, frames_per_second, video_height, video_width))
                 try:
                     # loop over frames from the video file stream
-                    while True:
+                    while video.isOpened():
                         # read the next frame from the file
-                        (grabbed, frame) = vs.read()
+                        (grabbed, frame) = video.read()
                         # if the frame was not grabbed, then we have reached the end of the stream
                         if not grabbed:
                             break
                         input_list.append(frame[:, :, ::-1])
-                    vs.release()
+                    # video.release()
+                    assert len(input_list) == num_frames
                     logger.info("Finished processing of {} frames".format(len(input_list)))
-                    input_list = input_list[:30]
                 
                 # an error occurred while trying to determine the total
                 # number of frames in the video file
@@ -392,7 +405,7 @@ def main():
         if save_intermediate_outputs:
             logger.info("Intermediate outputs saved to {}".format(raw_out_dir))
 
-        if ext in IMAGE_EXT:
+        if ext in IMAGE_EXT or (ext in VIDEO_EXT and args.save_video_frames_to_image):
             logger.info("Saving image results...")
             for i in range(len(semantic_image_list)):
                 # semantic
@@ -407,25 +420,41 @@ def main():
                 pil_image = Image.fromarray(panoptic_image_list[i].astype(dtype=np.uint8))
                 with open('%s/%s.png' % (panoptic_out_dir, 'panoptic_pred_%d' % i), mode='wb') as f:
                     pil_image.save(f, 'PNG')
-        else:
+        if ext in VIDEO_EXT:
             logger.info("Saving video results...")
-            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-            frame_size = (semantic_image_list[0].shape[1], semantic_image_list[0].shape[0])
             # semantic
             writer = cv2.VideoWriter(
-                '%s/%s.%s' % (semantic_out_dir, 'semantic_pred_video', 'mpeg'), fourcc, 30, frame_size, True)
+                filename='%s/%s.%s' % (semantic_out_dir, 'semantic_pred_video', 'mp4'),
+                # some installation of opencv may not support x264 (due to its license),
+                # you can try other format (e.g. MPEG)
+                fourcc=cv2.VideoWriter_fourcc(*"x264"),
+                fps=float(frames_per_second),
+                frameSize=(video_width, video_height),
+                isColor=True,)
             for semantic_image in semantic_image_list:
                 writer.write(semantic_image[:, :, ::-1].astype(dtype=np.uint8))
             writer.release()
             # instance
             writer = cv2.VideoWriter(
-                '%s/%s.%s' % (instance_out_dir, 'instance_pred_video', 'mpeg'), fourcc, 30, frame_size, True)
+                filename='%s/%s.%s' % (instance_out_dir, 'instance_pred_video', 'mp4'),
+                # some installation of opencv may not support x264 (due to its license),
+                # you can try other format (e.g. MPEG)
+                fourcc=cv2.VideoWriter_fourcc(*"x264"),
+                fps=float(frames_per_second),
+                frameSize=(video_width, video_height),
+                isColor=True,)
             for instance_image in instance_image_list:
                 writer.write(instance_image[:, :, ::-1].astype(dtype=np.uint8))
             writer.release()
             # panoptic
             writer = cv2.VideoWriter(
-                '%s/%s.%s' % (panoptic_out_dir, 'panoptic_pred_video', 'mpeg'), fourcc, 30, frame_size, True)
+                filename='%s/%s.%s' % (panoptic_out_dir, 'panoptic_pred_video', 'mp4'),
+                # some installation of opencv may not support x264 (due to its license),
+                # you can try other format (e.g. MPEG)
+                fourcc=cv2.VideoWriter_fourcc(*"x264"),
+                fps=float(frames_per_second),
+                frameSize=(video_width, video_height),
+                isColor=True,)
             for panoptic_image in panoptic_image_list:
                 writer.write(panoptic_image[:, :, ::-1].astype(dtype=np.uint8))
             writer.release()
