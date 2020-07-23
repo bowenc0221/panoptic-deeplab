@@ -34,6 +34,10 @@ from segmentation.utils import AverageMeter
 from segmentation.data import build_test_loader_from_cfg
 
 
+IMAGE_EXT = ['.png', '.jpg', '.jpeg']
+VIDEO_EXT = ['.mpeg', '.mpg']
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Test segmentation network with single process')
 
@@ -194,25 +198,59 @@ def main():
 
     # load images
     input_list = []
+    ext = None
     if os.path.exists(args.input_files):
         if os.path.isfile(args.input_files):
             # inference on a single file, extract extension
             ext = os.path.splitext(os.path.basename(args.input_files))[1]
-            if ext in ['.png', '.jpg', '.jpeg']:
+            if ext in IMAGE_EXT:
                 # image file
                 input_list.append(args.input_files)
-            elif ext in ['.mpeg']:
+            elif ext in VIDEO_EXT:
                 # video file
-                # TODO: decode video and convert to image list
-                raise NotImplementedError("Inference on video is not supported yet.")
+                # initialize the video stream and pointer to output video file
+                vs = cv2.VideoCapture(args.input_files)
+                writer = None
+                
+                # try to determine the total number of frames in the video file
+                try:
+                    prop =  cv2.cv.CV_CAP_PROP_FRAME_COUNT if imutils.is_cv2() \
+                        else cv2.CAP_PROP_FRAME_COUNT
+                    total = int(vs.get(prop))
+                    logger.info("{} frames in video".format(total))
+
+                    # loop over frames from the video file stream
+                    while True:
+                        # read the next frame from the file
+                        (grabbed, frame) = vs.read()
+                        input_list.append(frame)
+                        
+
+                        # if the frame was not grabbed, then we have reached the end
+                        # of the stream
+                        if not grabbed:
+                            break
+                    
+                    vs.release()
+                    logger.info("Finished processing of video into frames")
+                
+                # an error occurred while trying to determine the total
+                # number of frames in the video file
+                except:
+                    raise ValueError(
+                "Could not determine # of frames in video."
+                "Please check if OpenCV works for your video extension {}".format(ext))
+                    total = -1
             else:
                 raise ValueError("Unsupported extension: {}.".format(ext))
         else:
             # inference on a directory
+            ext = args.extension
             for fname in glob.glob(os.path.join(args.input_files, '*' + args.extension)):
                 input_list.append(fname)
     else:
         raise ValueError('Input file or directory does not exists: {}'.format(args.input_files))
+    assert ext is not None
 
     if isinstance(input_list[0], str):
         logger.info("Inference on images")
@@ -252,6 +290,10 @@ def main():
 
     net_time = AverageMeter()
     post_time = AverageMeter()
+    # collect visualization
+    semantic_image_list = []
+    instance_image_list = []
+    panoptic_image_list = []
     try:
         with torch.no_grad():
             for i, fname in enumerate(input_list):
@@ -259,7 +301,8 @@ def main():
                     # load image
                     raw_image = read_image(fname, 'RGB')
                 else:
-                    NotImplementedError("Inference on video is not supported yet.")
+                    raw_image = fname
+                    assert isinstance(raw_image, np.ndarray)
                 
                 # pad image
                 raw_shape = raw_image.shape[:2]
@@ -328,22 +371,30 @@ def main():
                         is_train=False,
                     )
 
-                save_annotation(semantic_pred, semantic_out_dir, 'semantic_pred_%d' % i,
-                                add_colormap=True, colormap=meta_dataset.create_label_colormap(),
-                                image=raw_image if args.merge_image else None)
-                pan_to_sem = panoptic_pred // meta_dataset.label_divisor
-                save_annotation(pan_to_sem, semantic_out_dir, 'panoptic_to_semantic_pred_%d' % i,
-                                add_colormap=True, colormap=meta_dataset.create_label_colormap(),
-                                image=raw_image if args.merge_image else None)
+                # collect semantic outputs
+                semantic_image_list.append(
+                    save_annotation(
+                        semantic_pred, semantic_out_dir, None,
+                        add_colormap=True, colormap=meta_dataset.create_label_colormap(),
+                        image=raw_image if args.merge_image else None)
+                )
+                # collect instance outputs
                 ins_id = panoptic_pred % meta_dataset.label_divisor
                 pan_to_ins = panoptic_pred.copy()
                 pan_to_ins[ins_id == 0] = 0
-                save_instance_annotation(pan_to_ins, instance_out_dir, 'panoptic_to_instance_pred_%d' % i,
-                                         image=raw_image if args.merge_image else None)
-                save_panoptic_annotation(panoptic_pred, panoptic_out_dir, 'panoptic_pred_%d' % i,
-                                         label_divisor=meta_dataset.label_divisor,
-                                         colormap=meta_dataset.create_label_colormap(),
-                                         image=raw_image if args.merge_image else None)
+                instance_image_list.append(
+                    save_instance_annotation(
+                        pan_to_ins, instance_out_dir, None,
+                        image=raw_image if args.merge_image else None)
+                )
+                # collect panoptic outputs
+                panoptic_image_list.append(
+                    save_panoptic_annotation(
+                        panoptic_pred, panoptic_out_dir, None,
+                        label_divisor=meta_dataset.label_divisor,
+                        colormap=meta_dataset.create_label_colormap(),
+                        image=raw_image if args.merge_image else None)
+                )
     except Exception:
         logger.exception("Exception during demo:")
         raise
@@ -351,6 +402,25 @@ def main():
         logger.info("Demo finished.")
         if save_intermediate_outputs:
             logger.info("Intermediate outputs saved to {}".format(raw_out_dir))
+
+        if ext in IMAGE_EXT:
+            logger.info("Saving image results...")
+            for i in range(len(semantic_image_list)):
+                # semantic
+                pil_image = Image.fromarray(semantic_image_list[i].astype(dtype=np.uint8))
+                with open('%s/%s.png' % (semantic_out_dir, 'semantic_pred_%d' % i), mode='wb') as f:
+                    pil_image.save(f, 'PNG')
+                # instance
+                pil_image = Image.fromarray(instance_image_list[i].astype(dtype=np.uint8))
+                with open('%s/%s.png' % (instance_out_dir, 'instance_pred_%d' % i), mode='wb') as f:
+                    pil_image.save(f, 'PNG')
+                # panoptic
+                pil_image = Image.fromarray(panoptic_image_list[i].astype(dtype=np.uint8))
+                with open('%s/%s.png' % (panoptic_out_dir, 'panoptic_pred_%d' % i), mode='wb') as f:
+                    pil_image.save(f, 'PNG')
+        else:
+            logger.info("Saving video results...")
+            pass
         logger.info("Semantic predictions saved to {}".format(semantic_out_dir))
         logger.info("Instance predictions saved to {}".format(instance_out_dir))
         logger.info("Panoptic predictions saved to {}".format(panoptic_out_dir))

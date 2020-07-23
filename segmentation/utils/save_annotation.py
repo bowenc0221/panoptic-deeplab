@@ -121,7 +121,7 @@ def save_annotation(label,
         label: The numpy array to be saved. The data will be converted
             to uint8 and saved as png image.
         save_dir: String, the directory to which the results will be saved.
-        filename: String, the image filename.
+        filename: String, the image filename, if None, return colored label.
         add_colormap: Boolean, add color map to the label or not.
         normalize_to_unit_values: Boolean, normalize the input values to [0, 1].
         scale_values: Boolean, scale the input values to [0, 255] for visualization.
@@ -145,6 +145,9 @@ def save_annotation(label,
 
     if image is not None:
         colored_label = 0.5 * colored_label + 0.5 * image
+    
+    if filename is None:
+        return colored_label
 
     pil_image = img.fromarray(colored_label.astype(dtype=np.uint8))
     with open('%s/%s.png' % (save_dir, filename), mode='wb') as f:
@@ -201,6 +204,9 @@ def save_instance_annotation(label,
 
     if image is not None:
         colored_label = 0.5 * colored_label + 0.5 * image
+    
+    if filename is None:
+        return colored_label
 
     pil_image = img.fromarray(colored_label.astype(dtype=np.uint8))
     with open('%s/%s.png' % (save_dir, filename), mode='wb') as f:
@@ -252,6 +258,9 @@ def save_panoptic_annotation(label,
     
     if image is not None:
         colored_label = 0.5 * colored_label + 0.5 * image
+    
+    if filename is None:
+        return colored_label
 
     pil_image = img.fromarray(colored_label.astype(dtype=np.uint8))
     with open('%s/%s.png' % (save_dir, filename), mode='wb') as f:
