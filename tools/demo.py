@@ -210,7 +210,6 @@ def main():
                 # video file
                 # initialize the video stream and pointer to output video file
                 vs = cv2.VideoCapture(args.input_files)
-                writer = None
                 
                 # try to determine the total number of frames in the video file
                 try:
@@ -223,7 +222,7 @@ def main():
                     while True:
                         # read the next frame from the file
                         (grabbed, frame) = vs.read()
-                        input_list.append(frame)
+                        input_list.append(frame[:, :, ::-1])
                         
 
                         # if the frame was not grabbed, then we have reached the end
@@ -420,7 +419,26 @@ def main():
                     pil_image.save(f, 'PNG')
         else:
             logger.info("Saving video results...")
-            pass
+            fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+            frame_size = (semantic_image_list[0].shape[1], semantic_image_list[0].shape[0])
+            # semantic
+            writer = cv2.VideoWriter(
+                '%s/%s.mpeg' % (semantic_out_dir, 'semantic_pred_video'), fourcc, 30, frame_size, True)
+            for semantic_image in semantic_image_list:
+                writer.write(semantic_image[:, :, ::-1])
+            writer.release()
+            # instance
+            writer = cv2.VideoWriter(
+                '%s/%s.mpeg' % (instance_out_dir, 'instance_pred_video'), fourcc, 30, frame_size, True)
+            for instance_image in instance_image_list:
+                writer.write(instance_image[:, :, ::-1])
+            writer.release()
+            # panoptic
+            writer = cv2.VideoWriter(
+                '%s/%s.mpeg' % (panoptic_out_dir, 'panoptic_pred_video'), fourcc, 30, frame_size, True)
+            for panoptic_image in panoptic_image_list:
+                writer.write(panoptic_image[:, :, ::-1])
+            writer.release()
         logger.info("Semantic predictions saved to {}".format(semantic_out_dir))
         logger.info("Instance predictions saved to {}".format(instance_out_dir))
         logger.info("Panoptic predictions saved to {}".format(panoptic_out_dir))
