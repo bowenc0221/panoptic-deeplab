@@ -33,6 +33,8 @@ import segmentation.data.transforms.transforms as T
 from segmentation.utils import AverageMeter
 from segmentation.data import build_test_loader_from_cfg
 
+from segmentation.utils.video_loader import LoadMovieOrImages
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Test segmentation network with single process')
@@ -201,10 +203,11 @@ def main():
             if ext in ['.png', '.jpg', '.jpeg']:
                 # image file
                 input_list.append(args.input_files)
-            elif ext in ['.mpeg']:
+            elif ext in ['.mpeg', '.mp4', '.avi']:
                 # video file
-                # TODO: decode video and convert to image list
-                raise NotImplementedError("Inference on video is not supported yet.")
+                # raise NotImplementedError("Inference on video is not supported yet.")
+                input_list = LoadMovieOrImages(args.input_files, img_size=460, frame_step=1, time_step=None,
+                                               start_time=None, end_time=None)
             else:
                 raise ValueError("Unsupported extension: {}.".format(ext))
         else:
@@ -214,7 +217,7 @@ def main():
     else:
         raise ValueError('Input file or directory does not exists: {}'.format(args.input_files))
 
-    if isinstance(input_list[0], str):
+    if isinstance(input_list, list) and isinstance(input_list[0], str):
         logger.info("Inference on images")
         logger.info(input_list)
     else:
@@ -259,7 +262,8 @@ def main():
                     # load image
                     raw_image = read_image(fname, 'RGB')
                 else:
-                    NotImplementedError("Inference on video is not supported yet.")
+                    # NotImplementedError("Inference on video is not supported yet.")
+                    raw_image = fname[1].transpose(1, 2, 0)
                 
                 # pad image
                 raw_shape = raw_image.shape[:2]
