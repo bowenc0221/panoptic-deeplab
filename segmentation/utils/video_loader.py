@@ -6,19 +6,19 @@ from moviepy.editor import *
 
 class LoadMovieOrImages:
     """
-    图片与视频加载
-    视频支持帧间隔与时间间隔，2选1，同时使用时 time_step 优先
-    @param frame_step:视频间隔帧数 整型
-    @param time_step:视频间隔秒数 浮点型
-    @param start_time:视频开始时间 秒作单位 浮点型
-    @param end_time:视频结束时间 秒作单位 浮点型
+    video or images
+    Video supports frame interval and time interval, select 1 from 2 and time_step takes precedence when used at the same time
+    @param frame_step:frame interval (long)
+    @param time_step:time interval (second float)
+    @param start_time:video start time (second float)
+    @param end_time:video end time (second float)
     """
 
     def __init__(self, path, img_size: int = 640, frame_step: int = None, time_step: float = None,
                  start_time: float = None, end_time: float = None):
         img_formats = ['.bmp', '.jpg', '.jpeg', '.png', '.tif', '.dng']
         vid_formats = ['.mov', '.avi', '.mp4', '.mpg', '.mpeg', '.m4v', '.wmv', '.mkv']
-        path = str(path)  # os-agnostic
+        path = str(path)
         files = []
         if os.path.isdir(path):
             files = sorted(glob.glob(os.path.join(path, '*.*')))
@@ -31,7 +31,7 @@ class LoadMovieOrImages:
 
         self.img_size = img_size
         self.files = images + videos
-        self.nF = nI + nV  # 文件个数
+        self.nF = nI + nV  # number of files
         self.video_flag = [False] * nI + [True] * nV
         self.mode = 'images'
         self.frame_step = frame_step
@@ -39,7 +39,7 @@ class LoadMovieOrImages:
         self.start_time = start_time
         self.end_time = end_time
         if any(videos):
-            self.new_video(videos[0])  # 新的视频
+            self.new_video(videos[0])  # new video
         else:
             self.vfc = None
         assert self.nF > 0, 'No images or videos found in %s. Supported formats are:\nimages: %s\nvideos: %s' % \
@@ -55,20 +55,20 @@ class LoadMovieOrImages:
         path = self.files[self.count]
 
         if self.video_flag[self.count]:
-            # 视频
+            # video
             self.mode = 'video'
             # img0 = self.iter_frame.__next__()
             frame_loc = self._frame_c * self.item_time
             if frame_loc > (self.nframes / self.fps):
                 raise StopIteration
-            # 到了结束时间
+            # It's the end time
             if self.end_time is not None and frame_loc >= self.end_time:
                 raise StopIteration
-            img0 = self.vfc.get_frame(frame_loc)  # 参数是秒做单位可以为小数
-            if img0 is None:  # 没有数据
+            img0 = self.vfc.get_frame(frame_loc)  # The parameter is seconds as the unit can be a decimal
+            if img0 is None:  # Video is over
                 self.count += 1
                 self.vfc.close()
-                if self.count == self.nF:  # 文件都处理完了
+                if self.count == self.nF:  # The files are all processed
                     raise StopIteration
                 else:
                     path = self.files[self.count]
@@ -88,7 +88,7 @@ class LoadMovieOrImages:
             print('video %g/%g (%g/%g) %s: ' % (self.count + 1, self.nF, self.frame, self.nframes, path), end='')
 
         else:
-            # 图片
+            # pictures
             self.count += 1
             img0 = cv2.imread(path)  # BGR
             img0 = np.ascontiguousarray(img0[:, :, ::-1])  # BGR to RGB
@@ -98,7 +98,7 @@ class LoadMovieOrImages:
         # Padded resize
         img = self.letterbox(img0, new_shape=self.img_size)[0]
 
-        # 格式转换
+        # Format conversion
         img = img.transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
         img = np.ascontiguousarray(img)
 
@@ -138,20 +138,20 @@ class LoadMovieOrImages:
         return img, ratio, (dw, dh)
 
     def new_video(self, path, audio=False):
-        self.frame = 0  # 当前帧
-        self._frame_c = 0  # 处理了多少帧
+        self.frame = 0  # Current frame
+        self._frame_c = 0  # How many frames were processed
         self.vfc = VideoFileClip(path, audio=audio)
         # self.iter_frame = self.vfc.iter_frames()
         self.nframes = max(int(self.vfc.duration * self.vfc.fps), 0)
         self.fps = self.vfc.fps
         self.item_time = 1 / self.fps
-        # 跳帧
+        # frame interval
         if self.frame_step is not None and self.frame_step > 0:
             self.item_time = self.item_time * self.frame_step
-        # 跳时(秒)
+        # time interval (second)
         if self.time_step is not None and self.time_step > 0:
             self.item_time = self.time_step
-        # 开始时间
+        # Start time
         if self.start_time is not None and self.start_time > 0:
             self._frame_c = self.start_time / self.item_time
             if self.frame_step is not None and self.frame_step > 0:
@@ -160,12 +160,12 @@ class LoadMovieOrImages:
                 self.frame = self._frame_c
             if self.time_step is not None and self.time_step > 0:
                 self.frame = self.fps * self._frame_c * self.item_time
-        # 结束时间
+        # End Time
         if self.end_time is not None and self.end_time > 0:
             if self.start_time is not None and self.start_time > 0:
                 if self.end_time < self.start_time:
-                    self.end_time = None  # 时间点不对直接到视频最后
+                    self.end_time = None  # The time is wrong, go straight to the end of the video
                     print("end_time must be greater than start_time")
 
     def __len__(self):
-        return self.nF  # 文件个数
+        return self.nF  # number of files

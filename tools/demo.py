@@ -205,7 +205,6 @@ def main():
                 input_list.append(args.input_files)
             elif ext in ['.mpeg', '.mp4', '.avi']:
                 # video file
-                # raise NotImplementedError("Inference on video is not supported yet.")
                 input_list = LoadMovieOrImages(args.input_files, img_size=460, frame_step=1, time_step=None,
                                                start_time=None, end_time=None)
             else:
@@ -262,9 +261,9 @@ def main():
                     # load image
                     raw_image = read_image(fname, 'RGB')
                 else:
-                    # NotImplementedError("Inference on video is not supported yet.")
-                    raw_image = fname[1].transpose(1, 2, 0)
-                
+                    raw_image = fname[1].transpose(1, 2, 0)  # resize_frame
+                    # raw_image = fname[2].transpose(1, 2, 0)  # raw_frame
+
                 # pad image
                 raw_shape = raw_image.shape[:2]
                 raw_h = raw_shape[0]
