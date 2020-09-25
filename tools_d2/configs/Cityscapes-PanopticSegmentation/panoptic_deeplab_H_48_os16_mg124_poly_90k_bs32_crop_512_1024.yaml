@@ -1,0 +1,44 @@
+_BASE_: Base-PanopticDeepLab-OS16.yaml
+MODEL:
+  WEIGHTS: "h48.pkl"
+  PIXEL_MEAN: [123.675, 116.280, 103.530]
+  PIXEL_STD: [58.395, 57.120, 57.375]
+  BACKBONE:
+    NAME: "d2_hrnet"
+  RESNETS:
+    NORM: "SyncBN"
+    DEPTH: 48
+    OUT_FEATURES: ["res2", "res3", "res4", "res5"]
+  SEM_SEG_HEAD:
+    IN_FEATURES: ["res2", "res3", "res4", "res5"]
+    PROJECT_FEATURES: ["res2", "res3", "res4"]
+    PROJECT_CHANNELS: [32, 64, 128]
+    ASPP_CHANNELS: 256
+    ASPP_DILATIONS: [3, 6, 9]
+    ASPP_DROPOUT: 0.1
+    HEAD_CHANNELS: 256
+    CONVS_DIM: 256
+    COMMON_STRIDE: 4
+    NUM_CLASSES: 19
+    LOSS_TYPE: "hard_pixel_mining"
+    NORM: "SyncBN"
+  INS_EMBED_HEAD:
+    NAME: "PanopticDeepLabInsEmbedHead"
+    IN_FEATURES: ["res2", "res3", "res4", "res5"]
+    PROJECT_FEATURES: ["res2", "res3", "res4"]
+    PROJECT_CHANNELS: [32, 64, 128]
+    ASPP_CHANNELS: 256
+    ASPP_DILATIONS: [3, 6, 9]
+    ASPP_DROPOUT: 0.1
+    HEAD_CHANNELS: 32
+    CONVS_DIM: 128
+    COMMON_STRIDE: 4
+    NORM: "SyncBN"
+    CENTER_LOSS_WEIGHT: 200.0
+    OFFSET_LOSS_WEIGHT: 0.01
+SOLVER:
+  MAX_ITER: 90000
+INPUT:
+  FORMAT: "RGB"
+  CROP:
+    SIZE: (512, 1024)
