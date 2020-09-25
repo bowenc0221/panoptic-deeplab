@@ -1,0 +1,17 @@
+_BASE_: Base-PanopticDeepLab-OS16.yaml
+MODEL:
+  WEIGHTS: "x65.pkl"
+  PIXEL_MEAN: [128, 128, 128]
+  PIXEL_STD: [128, 128, 128]
+  BACKBONE:
+    NAME: "d2_xception_65"
+  RESNETS:
+    NORM: "SyncBN"
+    RES4_DILATION: 1
+    RES5_DILATION: 2
+SOLVER:
+  MAX_ITER: 90000
+INPUT:
+  FORMAT: "RGB"
+  CROP:
+    SIZE: (512, 1024)
