@@ -104,7 +104,7 @@ Cityscapes models are trained with ImageNet pretraining.
 <td align="center"> 75.7 </td>
 <td align="center"> 79.4 </td>
 <td align="center"> 32.8 </td>
-<td align="center"><a href="
+<td align="center"><a href=https://drive.google.com/file/d/1F9Biuu9UmgfCyatP5yQTYN5V5_YyVGA2/view?usp=sharing"
 ">model</a></td>
 </tr>
  <tr><td align="left"><a href="config/Cityscapes-PanopticSegmentation/panoptic_deeplab_H_48_os16_mg124_poly_90k_bs32_crop_512_1024.yaml">Panoptic-DeepLab</a></td>
@@ -115,7 +115,7 @@ Cityscapes models are trained with ImageNet pretraining.
 <td align="center"> 76.0 </td>
 <td align="center"> 80.3 </td>
 <td align="center"> 35.9 </td>
-<td align="center"><a href="
+<td align="center"><a href=https://drive.google.com/file/d/1jQp844gR9NvAXmSXNuRgiY516LsRbTSN/view?usp=sharing"
 ">model</a></td>
 </tr>
 </tbody></table>
@@ -157,14 +157,14 @@ Cityscapes models are trained with ImageNet pretraining.
 <td align="center">X65-DC5</td>
 <td align="center">1024&times;2048</td>
 <td align="center"> 80.1 </td>
-<td align="center"><a href="
+<td align="center"><a href=https://drive.google.com/file/d/13z2R1cLEGLCIvFVFHGAianOFPi5qjpf_/view?usp=sharing"
 ">model</a></td>
 </tr>
  <tr><td align="left"><a href="configs/Cityscapes-SemanticSegmentation/deeplab_v3_plus_H_48_os4_poly_90k_bs16.yaml">DeepLabV3+</a></td>
 <td align="center">HRNet-48</td>
 <td align="center">1024&times;2048</td>
 <td align="center"> 80.9 </td>
-<td align="center"><a href="
+<td align="center"><a href=https://drive.google.com/file/d/1ppFGnva9WsZMMAJGx_FLZjLhvh4OBbGI/view?usp=sharing"
 ">model</a></td>
 </tr>
 </tbody></table>

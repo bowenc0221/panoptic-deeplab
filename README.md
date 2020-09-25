@@ -50,7 +50,7 @@ This is the **PyTorch re-implementation** of our CVPR2020 paper:
 <td align="center"> 75.7 </td>
 <td align="center"> 79.4 </td>
 <td align="center"> 32.8 </td>
-<td align="center"><a href="
+<td align="center"><a href=https://drive.google.com/file/d/1F9Biuu9UmgfCyatP5yQTYN5V5_YyVGA2/view?usp=sharing"
 ">model</a></td>
 </tr>
  <tr><td align="left"><a href="tools_d2/config/Cityscapes-PanopticSegmentation/panoptic_deeplab_H_48_os16_mg124_poly_90k_bs32_crop_512_1024.yaml">Panoptic-DeepLab</a></td>
@@ -61,7 +61,7 @@ This is the **PyTorch re-implementation** of our CVPR2020 paper:
 <td align="center"> 76.0 </td>
 <td align="center"> 80.3 </td>
 <td align="center"> 35.9 </td>
-<td align="center"><a href="
+<td align="center"><a href=https://drive.google.com/file/d/1jQp844gR9NvAXmSXNuRgiY516LsRbTSN/view?usp=sharing"
 ">model</a></td>
 </tr>
 </tbody></table>
