@@ -68,7 +68,6 @@ Note: the only difference is we rename `train_net.py` to `train_panoptic_deeplab
 
 To train a model with 8 GPUs run:
 ```bash
-cd /path/to/detectron2/projects/Panoptic-DeepLab
 python train_panoptic_deeplab.py --config-file config/Cityscapes-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_90k_bs32_crop_512_1024.yaml --num-gpus 8
 ```
 
@@ -76,7 +75,6 @@ python train_panoptic_deeplab.py --config-file config/Cityscapes-PanopticSegment
 
 Model evaluation can be done similarly:
 ```bash
-cd /path/to/detectron2/projects/Panoptic-DeepLab
 python train_panoptic_deeplab.py --config-file config/Cityscapes-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_90k_bs32_crop_512_1024.yaml --eval-only MODEL.WEIGHTS /path/to/model_checkpoint
 ```
 
