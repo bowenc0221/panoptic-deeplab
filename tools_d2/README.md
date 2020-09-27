@@ -2,7 +2,8 @@
 This repo gives you a tutorial on how to use a custom backbone for Panoptic-DeepLab with Detectron2.
 
 ## Installation
-Install Detectron2 following [the instructions](https://detectron2.readthedocs.io/tutorials/install.html).
+Install Detectron2 following [the instructions](https://detectron2.readthedocs.io/tutorials/install.html).  
+Note: you will need to install the latest Detectron2 after commit id [2618f329eb2c536ba6d3289079362a1f882a3854](https://github.com/facebookresearch/detectron2/commit/2618f329eb2c536ba6d3289079362a1f882a3854).
 
 ## Dataset
 First, prepare the Cityscapes dataset following this expected dataset structure
@@ -77,6 +78,10 @@ Model evaluation can be done similarly:
 ```bash
 python train_panoptic_deeplab.py --config-file config/Cityscapes-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_90k_bs32_crop_512_1024.yaml --eval-only MODEL.WEIGHTS /path/to/model_checkpoint
 ```
+
+### Detectron2 code structure
+The decoder for Panoptic-DeepLab is defined in this file: https://github.com/facebookresearch/detectron2/blob/master/projects/Panoptic-DeepLab/panoptic_deeplab/panoptic_seg.py.  
+It includes both semantic branch and instance branch.
 
 ### Cityscapes Panoptic Segmentation
 Cityscapes models are trained with ImageNet pretraining.
