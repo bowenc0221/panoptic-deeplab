@@ -4,6 +4,10 @@ This repo gives you a tutorial on how to use a custom backbone for Panoptic-Deep
 ## Installation
 Install Detectron2 following [the instructions](https://detectron2.readthedocs.io/tutorials/install.html).
 
+## Demo
+Visualization of Panoptic-DeepLab predictions from `demo.py`.
+![Visualization of Panoptic-DeepLab](/docs/vis.png)
+
 ## Dataset
 First, prepare the Cityscapes dataset following this expected dataset structure
 ```
