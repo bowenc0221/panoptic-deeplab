@@ -3,7 +3,7 @@ This repo gives you a tutorial on how to use a custom backbone for Panoptic-Deep
 
 ## Installation
 Install Detectron2 following [the instructions](https://detectron2.readthedocs.io/tutorials/install.html).  
-Note: you will need to install the latest Detectron2 after commit id [2618f329eb2c536ba6d3289079362a1f882a3854](https://github.com/facebookresearch/detectron2/commit/2618f329eb2c536ba6d3289079362a1f882a3854).
+Note: you will need to install the latest Detectron2 after commit id [5c9e0d9595316ce3447612a4ce1f602911bde2b7](https://github.com/facebookresearch/detectron2/commit/5c9e0d9595316ce3447612a4ce1f602911bde2b7).
 
 ## Demo
 Visualization of Panoptic-DeepLab predictions from `demo.py`.
