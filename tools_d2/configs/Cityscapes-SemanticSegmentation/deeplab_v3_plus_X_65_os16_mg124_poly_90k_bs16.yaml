@@ -1,0 +1,21 @@
+_BASE_: Base-DeepLabV3-OS16-Semantic.yaml
+MODEL:
+  WEIGHTS: "x65.pkl"
+  PIXEL_MEAN: [128, 128, 128]
+  PIXEL_STD: [128, 128, 128]
+  BACKBONE:
+    NAME: "d2_xception_65"
+  RESNETS:
+    NORM: "SyncBN"
+    OUT_FEATURES: ["res2", "res5"]
+    RES4_DILATION: 1
+    RES5_DILATION: 2
+  SEM_SEG_HEAD:
+    NAME: "DeepLabV3PlusHead"
+    IN_FEATURES: ["res2", "res5"]
+    PROJECT_FEATURES: ["res2"]
+    PROJECT_CHANNELS: [48]
+    NORM: "SyncBN"
+    COMMON_STRIDE: 4
+INPUT:
+  FORMAT: "RGB"
