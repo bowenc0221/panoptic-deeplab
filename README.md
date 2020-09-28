@@ -42,7 +42,7 @@ This is the **PyTorch re-implementation** of our CVPR2020 paper:
 <td align="center"><a href="
 ">model</a></td>
 </tr>
- <tr><td align="left"><a href="tools_d2/config/Cityscapes-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_90k_bs32_crop_512_1024.yaml">Panoptic-DeepLab</a></td>
+ <tr><td align="left"><a href="tools_d2/configs/Cityscapes-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_90k_bs32_crop_512_1024.yaml">Panoptic-DeepLab</a></td>
 <td align="center">X65-DC5</td>
 <td align="center">1024&times;2048</td>
 <td align="center"> 62.6 </td>
@@ -53,7 +53,7 @@ This is the **PyTorch re-implementation** of our CVPR2020 paper:
 <td align="center"><a href=https://drive.google.com/file/d/1F9Biuu9UmgfCyatP5yQTYN5V5_YyVGA2/view?usp=sharing"
 ">model</a></td>
 </tr>
- <tr><td align="left"><a href="tools_d2/config/Cityscapes-PanopticSegmentation/panoptic_deeplab_H_48_os16_mg124_poly_90k_bs32_crop_512_1024.yaml">Panoptic-DeepLab</a></td>
+ <tr><td align="left"><a href="tools_d2/configs/Cityscapes-PanopticSegmentation/panoptic_deeplab_H_48_os16_mg124_poly_90k_bs32_crop_512_1024.yaml">Panoptic-DeepLab</a></td>
 <td align="center">HRNet-48</td>
 <td align="center">1024&times;2048</td>
 <td align="center"> 63.3 </td>
