@@ -16,7 +16,7 @@ This is the **PyTorch re-implementation** of our CVPR2020 paper:
 * [2020/07/01] More Cityscapes pre-trained backbones in model zoo (MobileNet and Xception are supported).
 * [2020/06/30] Panoptic-DeepLab now supports [HRNet](https://github.com/HRNet), using HRNet-w48 backbone achieves 63.4% PQ on Cityscapes. Thanks to @PkuRainBow.
 
-## Results
+## Results on Cityscapes panoptic segmentation
 
 <table><tbody>
 <!-- START TABLE -->
