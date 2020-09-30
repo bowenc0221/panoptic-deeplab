@@ -11,6 +11,21 @@ Visualization of Panoptic-DeepLab predictions from `demo.py`.
 ![Visualization of Panoptic-DeepLab](/docs/vis.png)
 
 ## Dataset
+Detectron2 has builtin support for a few datasets.
+The datasets are assumed to exist in a directory specified by the environment variable
+`DETECTRON2_DATASETS`.
+Under this directory, detectron2 will look for datasets in the structure described below, if needed.
+```
+$DETECTRON2_DATASETS/
+  coco/
+  lvis/
+  cityscapes/
+  VOC20{07,12}/
+```
+
+You can set the location for builtin datasets by `export DETECTRON2_DATASETS=/path/to/datasets`.
+If left unset, the default is `./datasets` relative to your current working directory.
+
 First, prepare the Cityscapes dataset following this expected dataset structure
 ```
 cityscapes/
