@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+#
+# Modified by Bowen Cheng
+#
+# Copyright (c) Facebook, Inc. and its affiliates.
 
 """
 DeepLab Training Script.

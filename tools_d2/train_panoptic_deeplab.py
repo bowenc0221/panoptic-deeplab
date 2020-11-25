@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+#
+# Modified by Bowen Cheng
+#
+# Copyright (c) Facebook, Inc. and its affiliates.
 
 """
 Panoptic-DeepLab Training Script.
@@ -8,7 +11,6 @@ This script is a simplified version of the training script in detectron2/tools.
 
 import _init_paths
 import os
-from typing import Any, Dict, List, Set
 import torch
 
 import detectron2.data.transforms as T
@@ -29,6 +31,7 @@ from detectron2.projects.panoptic_deeplab import (
     PanopticDeeplabDatasetMapper,
     add_panoptic_deeplab_config,
 )
+from detectron2.solver import get_default_optimizer_params
 from detectron2.solver.build import maybe_add_gradient_clipping
 
 import d2
@@ -109,52 +112,27 @@ class Trainer(DefaultTrainer):
         """
         Build an optimizer from config.
         """
-        norm_module_types = (
-            torch.nn.BatchNorm1d,
-            torch.nn.BatchNorm2d,
-            torch.nn.BatchNorm3d,
-            torch.nn.SyncBatchNorm,
-            # NaiveSyncBatchNorm inherits from BatchNorm2d
-            torch.nn.GroupNorm,
-            torch.nn.InstanceNorm1d,
-            torch.nn.InstanceNorm2d,
-            torch.nn.InstanceNorm3d,
-            torch.nn.LayerNorm,
-            torch.nn.LocalResponseNorm,
+        params = get_default_optimizer_params(
+            model,
+            base_lr=cfg.SOLVER.BASE_LR,
+            weight_decay=cfg.SOLVER.WEIGHT_DECAY,
+            weight_decay_norm=cfg.SOLVER.WEIGHT_DECAY_NORM,
+            bias_lr_factor=cfg.SOLVER.BIAS_LR_FACTOR,
+            weight_decay_bias=cfg.SOLVER.WEIGHT_DECAY_BIAS,
         )
-        params: List[Dict[str, Any]] = []
-        memo: Set[torch.nn.parameter.Parameter] = set()
-        for module in model.modules():
-            for key, value in module.named_parameters(recurse=False):
-                if not value.requires_grad:
-                    continue
-                # Avoid duplicating parameters
-                if value in memo:
-                    continue
-                memo.add(value)
-                lr = cfg.SOLVER.BASE_LR
-                weight_decay = cfg.SOLVER.WEIGHT_DECAY
-                if isinstance(module, norm_module_types):
-                    weight_decay = cfg.SOLVER.WEIGHT_DECAY_NORM
-                elif key == "bias":
-                    lr = cfg.SOLVER.BASE_LR * cfg.SOLVER.BIAS_LR_FACTOR
-                    weight_decay = cfg.SOLVER.WEIGHT_DECAY_BIAS
-                params += [{"params": [value], "lr": lr, "weight_decay": weight_decay}]
 
         optimizer_type = cfg.SOLVER.OPTIMIZER
         if optimizer_type == "SGD":
-            optimizer = torch.optim.SGD(
+            return maybe_add_gradient_clipping(cfg, torch.optim.SGD)(
                 params,
                 cfg.SOLVER.BASE_LR,
                 momentum=cfg.SOLVER.MOMENTUM,
                 nesterov=cfg.SOLVER.NESTEROV,
             )
         elif optimizer_type == "ADAM":
-            optimizer = torch.optim.Adam(params, cfg.SOLVER.BASE_LR)
+            return maybe_add_gradient_clipping(cfg, torch.optim.Adam)(params, cfg.SOLVER.BASE_LR)
         else:
             raise NotImplementedError(f"no optimizer type {optimizer_type}")
-        optimizer = maybe_add_gradient_clipping(cfg, optimizer)
-        return optimizer
 
 
 def setup(args):
