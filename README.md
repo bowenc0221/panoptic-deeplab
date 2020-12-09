@@ -66,6 +66,11 @@ This is the **PyTorch re-implementation** of our CVPR2020 paper:
 </tr>
 </tbody></table>
 
+Note:
+- This implementation currently uses a much heavier head (with regular Conv2d) than the original paper.
+- This implementation does not include optimized post-processing code needed for deployment. Post-processing the network
+  outputs now takes more time than the network itself.
+
 ### DepthwiseSeparableConv2d in ASPP and Decoder
 Coming soon
 
