@@ -71,6 +71,7 @@ This is the **PyTorch re-implementation** of our CVPR2020 paper:
 * This is a **re-implementation** of Panoptic-DeepLab, it is not guaranteed to reproduce all numbers in the paper, please refer to the
 original numbers from [Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation](https://arxiv.org/abs/1911.10194)
 when making comparison.
+* When comparing speed with Panoptic-DeepLab, please refer to the speed in **Table 9** of the [original paper](https://arxiv.org/abs/1911.10194).
 
 ## What's New
 * We release a detailed [technical report](/docs/tech_report.pdf) with implementation details 
