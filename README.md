@@ -17,7 +17,7 @@ This is the **PyTorch re-implementation** of our CVPR2020 paper:
 * [2020/06/30] Panoptic-DeepLab now supports [HRNet](https://github.com/HRNet), using HRNet-w48 backbone achieves 63.4% PQ on Cityscapes. Thanks to @PkuRainBow.
 
 ## Results on Cityscapes panoptic segmentation
-
+### Regular Conv2d in ASPP and Decoder
 <table><tbody>
 <!-- START TABLE -->
 <!-- TABLE HEADER -->
@@ -31,7 +31,7 @@ This is the **PyTorch re-implementation** of our CVPR2020 paper:
 <th valign="bottom">AP</th>
 <th valign="bottom">download</th>
 <!-- TABLE BODY -->
- <tr><td align="left">Panoptic-DeepLab</td>
+ <tr><td align="left"><a href="https://github.com/facebookresearch/detectron2/blob/master/projects/Panoptic-DeepLab/configs/Cityscapes-PanopticSegmentation/panoptic_deeplab_R_52_os16_mg124_poly_90k_bs32_crop_512_1024.yaml">Panoptic-DeepLab</td>
 <td align="center">R52-DC5</td>
 <td align="center">1024&times;2048</td>
 <td align="center"> 60.3 </td>
@@ -65,6 +65,12 @@ This is the **PyTorch re-implementation** of our CVPR2020 paper:
 ">model</a></td>
 </tr>
 </tbody></table>
+
+### DepthwiseSeparableConv2d in ASPP and Decoder
+Coming soon
+
+## Results on COCO panoptic segmentation
+Coming soon in the Detectron2 version.
 
 ## Disclaimer
 * The implementation in this repo will be depracated, please refer to my [Detectron2 implementation](https://github.com/facebookresearch/detectron2/tree/master/projects/Panoptic-DeepLab) which gives slightly better results.
