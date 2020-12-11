@@ -17,62 +17,31 @@ This is the **PyTorch re-implementation** of our CVPR2020 paper:
 * [2020/07/01] More Cityscapes pre-trained backbones in model zoo (MobileNet and Xception are supported).
 * [2020/06/30] Panoptic-DeepLab now supports [HRNet](https://github.com/HRNet), using HRNet-w48 backbone achieves 63.4% PQ on Cityscapes. Thanks to @PkuRainBow.
 
-## Results on Cityscapes panoptic segmentation
-### Regular Conv2d in ASPP and Decoder
-<table><tbody>
-<!-- START TABLE -->
-<!-- TABLE HEADER -->
-<th valign="bottom">Method</th>
-<th valign="bottom">Backbone</th>
-<th valign="bottom">Output<br/>resolution</th>
-<th valign="bottom">PQ</th>
-<th valign="bottom">SQ</th>
-<th valign="bottom">RQ</th>
-<th valign="bottom">mIoU</th>
-<th valign="bottom">AP</th>
-<th valign="bottom">download</th>
-<!-- TABLE BODY -->
- <tr><td align="left"><a href="https://github.com/facebookresearch/detectron2/blob/master/projects/Panoptic-DeepLab/configs/Cityscapes-PanopticSegmentation/panoptic_deeplab_R_52_os16_mg124_poly_90k_bs32_crop_512_1024.yaml">Panoptic-DeepLab</td>
-<td align="center">R52-DC5</td>
-<td align="center">1024&times;2048</td>
-<td align="center"> 60.3 </td>
-<td align="center"> 81.5 </td>
-<td align="center"> 72.9 </td>
-<td align="center"> 78.2 </td>
-<td align="center"> 33.2 </td>
-<td align="center"><a href="
-">model</a></td>
-</tr>
- <tr><td align="left"><a href="tools_d2/configs/Cityscapes-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_90k_bs32_crop_512_1024.yaml">Panoptic-DeepLab</a></td>
-<td align="center">X65-DC5</td>
-<td align="center">1024&times;2048</td>
-<td align="center"> 62.6 </td>
-<td align="center"> 81.5 </td>
-<td align="center"> 75.7 </td>
-<td align="center"> 79.4 </td>
-<td align="center"> 32.8 </td>
-<td align="center"><a href="https://drive.google.com/file/d/1F9Biuu9UmgfCyatP5yQTYN5V5_YyVGA2/view?usp=sharing
-">model</a></td>
-</tr>
- <tr><td align="left"><a href="tools_d2/configs/Cityscapes-PanopticSegmentation/panoptic_deeplab_H_48_os16_mg124_poly_90k_bs32_crop_512_1024.yaml">Panoptic-DeepLab</a></td>
-<td align="center">HRNet-48</td>
-<td align="center">1024&times;2048</td>
-<td align="center"> 63.3 </td>
-<td align="center"> 82.2 </td>
-<td align="center"> 76.0 </td>
-<td align="center"> 80.3 </td>
-<td align="center"> 35.9 </td>
-<td align="center"><a href="https://drive.google.com/file/d/1jQp844gR9NvAXmSXNuRgiY516LsRbTSN/view?usp=sharing
-">model</a></td>
-</tr>
-</tbody></table>
+## Disclaimer
+* The implementation in this repo will be depracated, please refer to my [Detectron2 implementation](https://github.com/facebookresearch/detectron2/tree/master/projects/Panoptic-DeepLab) which gives slightly better results.
+* This is a **re-implementation** of Panoptic-DeepLab, it is not guaranteed to reproduce all numbers in the paper, please refer to the
+original numbers from [Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation](https://arxiv.org/abs/1911.10194)
+when making comparison.
+* When comparing speed with Panoptic-DeepLab, please refer to the speed in **Table 9** of the [original paper](https://arxiv.org/abs/1911.10194).
+
+## What's New
+* We release a detailed [technical report](/docs/tech_report.pdf) with implementation details 
+and supplementary analysis on Panoptic-DeepLab. In particular, we find center prediction is almost perfect and the bottleneck of 
+bottom-up method still lies in semantic segmentation
+* It is powered by the [PyTorch](https://pytorch.org) deep learning framework.
+* Can be trained even on 4 1080TI GPUs (no need for 32 TPUs!).
+
+## How to use
+We suggest using the Detectron2 implementation. You can either use it directly from the [Detectron2 projects](https://github.com/facebookresearch/detectron2/tree/master/projects/Panoptic-DeepLab) or use it from this repo from [tools_d2/README.md](/tools_d2/README.md).
+
+The differences are, official Detectron2 implementation only supports ResNet or ResNeXt as the backbone. This repo gives you an example of how to use your a custom backbone within Detectron2.
 
 Note:
-- This implementation currently uses a much heavier head (with regular Conv2d) than the original paper.
-- This implementation does not include optimized post-processing code needed for deployment. Post-processing the network
-  outputs now takes more time than the network itself.
+* Please check the usage of this code in [tools_d2/README.md](/tools_d2/README.md).
+* If you are still interested in the old code, please check [tools/README.md](/tools/README.md).
 
-### DepthwiseSeparableConv2d in ASPP and Decoder
+## Model Zoos (Detectron2)
+### Cityscapes panoptic segmentation
 <table><tbody>
 <!-- START TABLE -->
 <!-- TABLE HEADER -->
@@ -126,31 +95,8 @@ Note:
 - This implementation does not include optimized post-processing code needed for deployment. Post-processing the network
   outputs now takes more time than the network itself.
 
-## Results on COCO panoptic segmentation
+### COCO panoptic segmentation
 Coming soon in the Detectron2 version.
-
-## Disclaimer
-* The implementation in this repo will be depracated, please refer to my [Detectron2 implementation](https://github.com/facebookresearch/detectron2/tree/master/projects/Panoptic-DeepLab) which gives slightly better results.
-* This is a **re-implementation** of Panoptic-DeepLab, it is not guaranteed to reproduce all numbers in the paper, please refer to the
-original numbers from [Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation](https://arxiv.org/abs/1911.10194)
-when making comparison.
-* When comparing speed with Panoptic-DeepLab, please refer to the speed in **Table 9** of the [original paper](https://arxiv.org/abs/1911.10194).
-
-## What's New
-* We release a detailed [technical report](/docs/tech_report.pdf) with implementation details 
-and supplementary analysis on Panoptic-DeepLab. In particular, we find center prediction is almost perfect and the bottleneck of 
-bottom-up method still lies in semantic segmentation
-* It is powered by the [PyTorch](https://pytorch.org) deep learning framework.
-* Can be trained even on 4 1080TI GPUs (no need for 32 TPUs!).
-
-## How to use
-We suggest using the Detectron2 implementation. You can either use it directly from the [Detectron2 projects](https://github.com/facebookresearch/detectron2/tree/master/projects/Panoptic-DeepLab) or use it from this repo from [tools_d2/README.md](/tools_d2/README.md).
-
-The differences are, official Detectron2 implementation only supports ResNet or ResNeXt as the backbone. This repo gives you an example of how to use your a custom backbone within Detectron2.
-
-Note:
-* Please check the usage of this code in [tools_d2/README.md](/tools_d2/README.md).
-* If you are still interested in the old code, please check [tools/README.md](/tools/README.md).
 
 ## Citing Panoptic-DeepLab
 
