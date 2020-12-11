@@ -177,8 +177,8 @@ Note:
 <td align="center"><a href="https://drive.google.com/file/d/1ZR3YxFEdwF498NWq9ENFCEsTIiOjvMbp/view?usp=sharing
 ">model</a></td>
 </tr>
- <tr><td align="left"><a href="configs/Cityscapes-PanopticSegmentation/panoptic_deeplab_H_48_os16_mg124_poly_90k_bs32_crop_512_1024_dsconv.yaml">Panoptic-DeepLab</a></td>
-<td align="center">HRNet-48 (DSConv)</td>
+ <tr><td align="left"><a href="configs/Cityscapes-PanopticSegmentation/panoptic_deeplab_H_48_os16_mg124_poly_90k_bs32_crop_512_1024_dsconv.yaml">Panoptic-DeepLab (DSConv)</a></td>
+<td align="center">HRNet-48</td>
 <td align="center">1024&times;2048</td>
 <td align="center"> 63.4 </td>
 <td align="center"> 81.9 </td>
