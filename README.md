@@ -40,7 +40,7 @@ Note:
 * Please check the usage of this code in [tools_d2/README.md](/tools_d2/README.md).
 * If you are still interested in the old code, please check [tools/README.md](/tools/README.md).
 
-## Model Zoos (Detectron2)
+## Model Zoo (Detectron2)
 ### Cityscapes panoptic segmentation
 <table><tbody>
 <!-- START TABLE -->
