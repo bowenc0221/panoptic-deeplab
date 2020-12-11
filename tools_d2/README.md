@@ -153,17 +153,19 @@ Note:
   outputs now takes more time than the network itself.
 
 #### DepthwiseSeparableConv2d in ASPP and Decoder
- <tr><td align="left"><a href="https://github.com/facebookresearch/detectron2/blob/master/projects/Panoptic-DeepLab/configs/Cityscapes-PanopticSegmentation/panoptic_deeplab_R_52_os16_mg124_poly_90k_bs32_crop_512_1024_dsconv.yaml">Panoptic-DeepLab (DSConv)</td>
-<td align="center">R52-DC5</td>
-<td align="center">1024&times;2048</td>
-<td align="center"> 60.3 </td>
-<td align="center"> 81.0 </td>
-<td align="center"> 73.2 </td>
-<td align="center"> 78.7 </td>
-<td align="center"> 32.1 </td>
-<td align="center"><a href="
-">model</a></td>
-</tr>
+<table><tbody>
+<!-- START TABLE -->
+<!-- TABLE HEADER -->
+<th valign="bottom">Method</th>
+<th valign="bottom">Backbone</th>
+<th valign="bottom">Output<br/>resolution</th>
+<th valign="bottom">PQ</th>
+<th valign="bottom">SQ</th>
+<th valign="bottom">RQ</th>
+<th valign="bottom">mIoU</th>
+<th valign="bottom">AP</th>
+<th valign="bottom">download</th>
+<!-- TABLE BODY -->
  <tr><td align="left"><a href="configs/Cityscapes-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_90k_bs32_crop_512_1024_dsconv.yaml">Panoptic-DeepLab (DSConv)</a></td>
 <td align="center">X65-DC5</td>
 <td align="center">1024&times;2048</td>
