@@ -106,6 +106,7 @@ It includes both semantic branch and instance branch.
 ### Cityscapes Panoptic Segmentation
 Cityscapes models are trained with ImageNet pretraining.
 
+#### Regular Conv2d in ASPP and Decoder
 <table><tbody>
 <!-- START TABLE -->
 <!-- TABLE HEADER -->
@@ -147,7 +148,50 @@ Note:
 - [X65](https://github.com/LikeLy-Journey/SegmenTron/releases/download/v0.1.0/tf-xception65-270e81cf.pth): Xception-65. It is converted from TensorFlow model. You need to convert it with `convert-pretrained-model-to-d2.py` first.
 - DC5 means using dilated convolution in `res5`.
 - [HRNet-48](https://optgaw.dm.files.1drv.com/y4mWNpya38VArcDInoPaL7GfPMgcop92G6YRkabO1QTSWkCbo7djk8BFZ6LK_KHHIYE8wqeSAChU58NVFOZEvqFaoz392OgcyBrq_f8XGkusQep_oQsuQ7DPQCUrdLwyze_NlsyDGWot0L9agkQ-M_SfNr10ETlCF5R7BdKDZdupmcMXZc-IE3Ysw1bVHdOH4l-XEbEKFAi6ivPUbeqlYkRMQ): HighResolutionNet-w48. This checkpoint comes form its [original implementation](https://github.com/HRNet/HRNet-Image-Classification). You need to convert it with `convert-pretrained-model-to-d2.py` first.
-- These results are trained with older version codes, latest code may give different results.
+- This implementation currently uses a much heavier head (with regular Conv2d) than the original paper.
+- This implementation does not include optimized post-processing code needed for deployment. Post-processing the network
+  outputs now takes more time than the network itself.
+
+#### DepthwiseSeparableConv2d in ASPP and Decoder
+ <tr><td align="left"><a href="https://github.com/facebookresearch/detectron2/blob/master/projects/Panoptic-DeepLab/configs/Cityscapes-PanopticSegmentation/panoptic_deeplab_R_52_os16_mg124_poly_90k_bs32_crop_512_1024_dsconv.yaml">Panoptic-DeepLab (DSConv)</td>
+<td align="center">R52-DC5</td>
+<td align="center">1024&times;2048</td>
+<td align="center"> 60.3 </td>
+<td align="center"> 81.0 </td>
+<td align="center"> 73.2 </td>
+<td align="center"> 78.7 </td>
+<td align="center"> 32.1 </td>
+<td align="center"><a href="
+">model</a></td>
+</tr>
+ <tr><td align="left"><a href="configs/Cityscapes-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_90k_bs32_crop_512_1024_dsconv.yaml">Panoptic-DeepLab (DSConv)</a></td>
+<td align="center">X65-DC5</td>
+<td align="center">1024&times;2048</td>
+<td align="center"> 61.4 </td>
+<td align="center"> 81.4 </td>
+<td align="center"> 74.3 </td>
+<td align="center"> 79.8 </td>
+<td align="center"> 32.6 </td>
+<td align="center"><a href="https://drive.google.com/file/d/1ZR3YxFEdwF498NWq9ENFCEsTIiOjvMbp/view?usp=sharing
+">model</a></td>
+</tr>
+ <tr><td align="left"><a href="configs/Cityscapes-PanopticSegmentation/panoptic_deeplab_H_48_os16_mg124_poly_90k_bs32_crop_512_1024_dsconv.yaml">Panoptic-DeepLab</a></td>
+<td align="center">HRNet-48 (DSConv)</td>
+<td align="center">1024&times;2048</td>
+<td align="center"> 63.4 </td>
+<td align="center"> 81.9 </td>
+<td align="center"> 76.4 </td>
+<td align="center"> 80.6 </td>
+<td align="center"> 36.2 </td>
+<td align="center"><a href="https://drive.google.com/file/d/1t1WB5GUtiwaL0UHngthX7_kWt0rBRNcO/view?usp=sharing
+">model</a></td>
+</tr>
+</tbody></table>
+
+Note:
+- This implementation uses DepthwiseSeparableConv2d (DSConv) in ASPP and decoder, which is same as the original paper.
+- This implementation does not include optimized post-processing code needed for deployment. Post-processing the network
+  outputs now takes more time than the network itself.
 
 ## DeepLab example
 Note: the only difference is we rename `train_net.py` to `train_deeplab.py`.
