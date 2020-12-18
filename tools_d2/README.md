@@ -4,7 +4,7 @@ This repo gives you a tutorial on how to use a custom backbone for Panoptic-Deep
 ## Installation
 Install Detectron2 following [the instructions](https://detectron2.readthedocs.io/tutorials/install.html).  
 Install panopticapi by: `pip install git+https://github.com/cocodataset/panopticapi.git`.  
-Note: you will need to install the latest Detectron2 after commit id [d06fd8521d90241f7c37a24e726d514a075b680d](https://github.com/facebookresearch/detectron2/commit/d06fd8521d90241f7c37a24e726d514a075b680d). The latest [v0.3](https://github.com/facebookresearch/detectron2/releases/tag/v0.3) release of Detectron2 does not support DepthwiseSeparableConv2d.
+Note: you will need to install the latest Detectron2 after commit id [fa1bc0](https://github.com/facebookresearch/detectron2/commit/fa1bc0cecfbc3e11f71773485ee02fc5d01696eb). The latest [v0.3](https://github.com/facebookresearch/detectron2/releases/tag/v0.3) release of Detectron2 does not support DepthwiseSeparableConv2d and COCO dataset.
 
 ## Demo
 Visualization of Panoptic-DeepLab predictions from `demo.py`.
@@ -97,6 +97,13 @@ python train_panoptic_deeplab.py --config-file config/Cityscapes-PanopticSegment
 Model evaluation can be done similarly:
 ```bash
 python train_panoptic_deeplab.py --config-file config/Cityscapes-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_90k_bs32_crop_512_1024.yaml --eval-only MODEL.WEIGHTS /path/to/model_checkpoint
+```
+
+### Benchmark network speed
+
+If you want to benchmark the network speed without post-processing, you can run the evaluation script with `MODEL.PANOPTIC_DEEPLAB.BENCHMARK_NETWORK_SPEED True`:
+```bash
+python train_panoptic_deeplab.py --config-file config/Cityscapes-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_90k_bs32_crop_512_1024.yaml --eval-only MODEL.WEIGHTS /path/to/model_checkpoint MODEL.PANOPTIC_DEEPLAB.BENCHMARK_NETWORK_SPEED True
 ```
 
 ### Detectron2 code structure
@@ -194,6 +201,53 @@ Note:
 - This implementation uses DepthwiseSeparableConv2d (DSConv) in ASPP and decoder, which is same as the original paper.
 - This implementation does not include optimized post-processing code needed for deployment. Post-processing the network
   outputs now takes more time than the network itself.
+
+### COCO Panoptic Segmentation
+COCO models are trained with ImageNet pretraining.
+
+#### DepthwiseSeparableConv2d in ASPP and Decoder
+<table><tbody>
+<!-- START TABLE -->
+<!-- TABLE HEADER -->
+<th valign="bottom">Method</th>
+<th valign="bottom">Backbone</th>
+<th valign="bottom">Output<br/>resolution</th>
+<th valign="bottom">PQ</th>
+<th valign="bottom">SQ</th>
+<th valign="bottom">RQ</th>
+<th valign="bottom">Box AP</th>
+<th valign="bottom">Mask AP</th>
+<th valign="bottom">download</th>
+<!-- TABLE BODY -->
+ <tr><td align="left"><a href="tools_d2/configs/COCO-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_200k_bs64_crop_640_640_coco_dsconv.yaml">Panoptic-DeepLab (DSConv)</a></td>
+<td align="center">X65-DC5</td>
+<td align="center">1024&times;2048</td>
+<td align="center"> 36.7 </td>
+<td align="center"> 77.4 </td>
+<td align="center"> 45.8 </td>
+<td align="center"> 19.9 </td>
+<td align="center"> 20.5 </td>
+<td align="center"><a href="https://drive.google.com/file/d/1FVj1amFkkbwL9RTba2oUYcwlD1JJMx-T/view?usp=sharing
+">model</a></td>
+</tr>
+ <tr><td align="left"><a href="tools_d2/configs/COCO-PanopticSegmentation/panoptic_deeplab_H_48_os16_mg124_poly_200k_bs64_crop_640_640_coco_dsconv.yaml">Panoptic-DeepLab (DSConv)</a></td>
+<td align="center">HRNet-48</td>
+<td align="center">1024&times;2048</td>
+<td align="center"> 37.8 </td>
+<td align="center"> 78.1 </td>
+<td align="center"> 46.9 </td>
+<td align="center"> 21.6 </td>
+<td align="center"> 22.3 </td>
+<td align="center"><a href="https://drive.google.com/file/d/17bl_n0SUXVktA0x2507dlwmti7s8FIpe/view?usp=sharing
+">model</a></td>
+</tr>
+</tbody></table>
+
+Note:
+- This implementation uses DepthwiseSeparableConv2d (DSConv) in ASPP and decoder, which is same as the original paper.
+- This implementation does not include optimized post-processing code needed for deployment. Post-processing the network
+  outputs now takes more time than the network itself.
+- The reproduced numbers are still lower than the original paper, this is probably due to slightly different data preprocessing.
 
 ## DeepLab example
 Note: the only difference is we rename `train_net.py` to `train_deeplab.py`.

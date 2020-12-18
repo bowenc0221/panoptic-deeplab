@@ -7,10 +7,11 @@ etc) to pixels belonging to thing classes.
 
 ![Illustrating of Panoptic-DeepLab](/docs/panoptic_deeplab.png)
 
-This is the **PyTorch re-implementation** of our CVPR2020 paper: 
-[Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation](https://arxiv.org/abs/1911.10194).
+This is the **PyTorch re-implementation** of our CVPR2020 paper based on Detectron2: 
+[Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation](https://arxiv.org/abs/1911.10194). Segmentation models with DeepLabV3 and DeepLabV3+ are also supported in this repo now!
 
 ## News
+* [2020/12/17] Support COCO dataset!
 * [2020/12/11] Support DepthwiseSeparableConv2d in the Detectron2 version of Panoptic-DeepLab. Now the Panoptic-DeepLab in Detectron2 is exactly the same as the implementation in our paper, except the post-processing has not been optimized.
 * [2020/09/24] I have implemented both [DeepLab](https://github.com/facebookresearch/detectron2/tree/master/projects/DeepLab) and [Panoptic-DeepLab](https://github.com/facebookresearch/detectron2/tree/master/projects/Panoptic-DeepLab) in the official [Detectron2](https://github.com/facebookresearch/detectron2), the implementation in the repo will be deprecated and I will mainly maintain the Detectron2 version. However, this repo still support different backbones for the Detectron2 Panoptic-DeepLab.
 * [2020/07/21] Check this [Google AI Blog](https://ai.googleblog.com/2020/07/improving-holistic-scene-understanding.html) for Panoptic-DeepLab.
@@ -92,11 +93,61 @@ Note:
 
 Note:
 - This implementation uses DepthwiseSeparableConv2d (DSConv) in ASPP and decoder, which is same as the original paper.
-- This implementation does not include optimized post-processing code needed for deployment. Post-processing the network
-  outputs now takes more time than the network itself.
+- This implementation does not include optimized post-processing code needed for deployment. Post-processing the network outputs now takes more time than the network itself.
 
 ### COCO panoptic segmentation
-Coming soon in the Detectron2 version.
+<table><tbody>
+<!-- START TABLE -->
+<!-- TABLE HEADER -->
+<th valign="bottom">Method</th>
+<th valign="bottom">Backbone</th>
+<th valign="bottom">Output<br/>resolution</th>
+<th valign="bottom">PQ</th>
+<th valign="bottom">SQ</th>
+<th valign="bottom">RQ</th>
+<th valign="bottom">Box AP</th>
+<th valign="bottom">Mask AP</th>
+<th valign="bottom">download</th>
+<!-- TABLE BODY -->
+ <tr><td align="left"><a href="https://github.com/facebookresearch/detectron2/blob/master/projects/Panoptic-DeepLab/configs/COCO-PanopticSegmentation/panoptic_deeplab_R_52_os16_mg124_poly_200k_bs64_crop_640_640_coco_dsconv.yaml">Panoptic-DeepLab (DSConv)</td>
+<td align="center">R52-DC5</td>
+<td align="center">1024&times;2048</td>
+<td align="center"> 34.2 </td>
+<td align="center"> 75.5 </td>
+<td align="center"> 43.2 </td>
+<td align="center"> 17.3 </td>
+<td align="center"> 18.5 </td>
+<td align="center"><a href="
+">model</a></td>
+</tr>
+ <tr><td align="left"><a href="tools_d2/configs/COCO-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_200k_bs64_crop_640_640_coco_dsconv.yaml">Panoptic-DeepLab (DSConv)</a></td>
+<td align="center">X65-DC5</td>
+<td align="center">1024&times;2048</td>
+<td align="center"> 36.7 </td>
+<td align="center"> 77.4 </td>
+<td align="center"> 45.8 </td>
+<td align="center"> 19.9 </td>
+<td align="center"> 20.5 </td>
+<td align="center"><a href="https://drive.google.com/file/d/1FVj1amFkkbwL9RTba2oUYcwlD1JJMx-T/view?usp=sharing
+">model</a></td>
+</tr>
+ <tr><td align="left"><a href="tools_d2/configs/COCO-PanopticSegmentation/panoptic_deeplab_H_48_os16_mg124_poly_200k_bs64_crop_640_640_coco_dsconv.yaml">Panoptic-DeepLab (DSConv)</a></td>
+<td align="center">HRNet-48</td>
+<td align="center">1024&times;2048</td>
+<td align="center"> 37.8 </td>
+<td align="center"> 78.1 </td>
+<td align="center"> 46.9 </td>
+<td align="center"> 21.6 </td>
+<td align="center"> 22.3 </td>
+<td align="center"><a href="https://drive.google.com/file/d/17bl_n0SUXVktA0x2507dlwmti7s8FIpe/view?usp=sharing
+">model</a></td>
+</tr>
+</tbody></table>
+
+Note:
+- This implementation uses DepthwiseSeparableConv2d (DSConv) in ASPP and decoder, which is same as the original paper.
+- This implementation does not include optimized post-processing code needed for deployment. Post-processing the network outputs now takes more time than the network itself.
+- \[Contributions welcome\] The reproduced numbers are still lower than the original paper (e.g. 34.2 PQ vs. 35.1 PQ with ResNet), this is probably due to slightly different data preprocessing. Please open an issue if you are interested to improve COCO performance.
 
 ## Citing Panoptic-DeepLab
 

@@ -1,0 +1,39 @@
+_BASE_: ../Cityscapes-PanopticSegmentation/Base-PanopticDeepLab-OS16.yaml
+MODEL:
+  WEIGHTS: "x65.pkl"
+  PIXEL_MEAN: [128, 128, 128]
+  PIXEL_STD: [128, 128, 128]
+  BACKBONE:
+    NAME: "d2_xception_65"
+  RESNETS:
+    NORM: "SyncBN"
+    RES4_DILATION: 1
+    RES5_DILATION: 2
+  PANOPTIC_DEEPLAB:
+    STUFF_AREA: 4096
+    NMS_KERNEL: 41
+    SIZE_DIVISIBILITY: 640
+    USE_DEPTHWISE_SEPARABLE_CONV: True
+  SEM_SEG_HEAD:
+    NUM_CLASSES: 133
+    LOSS_TOP_K: 1.0
+    USE_DEPTHWISE_SEPARABLE_CONV: True
+DATASETS:
+  TRAIN: ("coco_2017_train_panoptic",)
+  TEST: ("coco_2017_val_panoptic",)
+SOLVER:
+  BASE_LR: 0.0005
+  MAX_ITER: 200000
+  IMS_PER_BATCH: 64
+INPUT:
+  FORMAT: "RGB"
+  GAUSSIAN_SIGMA: 8
+  MIN_SIZE_TRAIN: !!python/object/apply:eval ["[int(x * 0.1 * 640) for x in range(5, 16)]"]
+  MIN_SIZE_TRAIN_SAMPLING: "choice"
+  MIN_SIZE_TEST: 640
+  MAX_SIZE_TRAIN: 640
+  MAX_SIZE_TEST: 640
+  CROP:
+    ENABLED: True
+    TYPE: "absolute"
+    SIZE: (640, 640)
