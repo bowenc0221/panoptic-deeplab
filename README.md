@@ -111,7 +111,7 @@ Note:
 <!-- TABLE BODY -->
  <tr><td align="left"><a href="https://github.com/facebookresearch/detectron2/blob/master/projects/Panoptic-DeepLab/configs/COCO-PanopticSegmentation/panoptic_deeplab_R_52_os16_mg124_poly_200k_bs64_crop_640_640_coco_dsconv.yaml">Panoptic-DeepLab (DSConv)</td>
 <td align="center">R52-DC5</td>
-<td align="center">1024&times;2048</td>
+<td align="center">640&times;640</td>
 <td align="center"> 34.2 </td>
 <td align="center"> 75.5 </td>
 <td align="center"> 43.2 </td>
@@ -122,7 +122,7 @@ Note:
 </tr>
  <tr><td align="left"><a href="tools_d2/configs/COCO-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_200k_bs64_crop_640_640_coco_dsconv.yaml">Panoptic-DeepLab (DSConv)</a></td>
 <td align="center">X65-DC5</td>
-<td align="center">1024&times;2048</td>
+<td align="center">640&times;640</td>
 <td align="center"> 36.7 </td>
 <td align="center"> 77.4 </td>
 <td align="center"> 45.8 </td>
@@ -133,7 +133,7 @@ Note:
 </tr>
  <tr><td align="left"><a href="tools_d2/configs/COCO-PanopticSegmentation/panoptic_deeplab_H_48_os16_mg124_poly_200k_bs64_crop_640_640_coco_dsconv.yaml">Panoptic-DeepLab (DSConv)</a></td>
 <td align="center">HRNet-48</td>
-<td align="center">1024&times;2048</td>
+<td align="center">640&times;640</td>
 <td align="center"> 37.8 </td>
 <td align="center"> 78.1 </td>
 <td align="center"> 46.9 </td>
