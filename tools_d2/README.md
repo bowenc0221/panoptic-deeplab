@@ -2,9 +2,9 @@
 This repo gives you a tutorial on how to use a custom backbone for Panoptic-DeepLab with Detectron2.
 
 ## Installation
-Install Detectron2 following [the instructions](https://detectron2.readthedocs.io/tutorials/install.html).  
-Install panopticapi by: `pip install git+https://github.com/cocodataset/panopticapi.git`.  
-Note: you will need to install the latest Detectron2 after commit id [fa1bc0](https://github.com/facebookresearch/detectron2/commit/fa1bc0cecfbc3e11f71773485ee02fc5d01696eb). The latest [v0.3](https://github.com/facebookresearch/detectron2/releases/tag/v0.3) release of Detectron2 does not support DepthwiseSeparableConv2d and COCO dataset.
+* Install Detectron2 following [the instructions](https://detectron2.readthedocs.io/tutorials/install.html).  
+* Install panopticapi by: `pip install git+https://github.com/cocodataset/panopticapi.git`.  
+* Note: you will need to install the latest Detectron2 after commit id [fa1bc0](https://github.com/facebookresearch/detectron2/commit/fa1bc0cecfbc3e11f71773485ee02fc5d01696eb). The latest [v0.3](https://github.com/facebookresearch/detectron2/releases/tag/v0.3) release of Detectron2 does not support DepthwiseSeparableConv2d and COCO dataset.
 
 ## Demo
 Visualization of Panoptic-DeepLab predictions from `demo.py`.
