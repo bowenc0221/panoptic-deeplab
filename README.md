@@ -147,7 +147,7 @@ Note:
 Note:
 - This implementation uses DepthwiseSeparableConv2d (DSConv) in ASPP and decoder, which is same as the original paper.
 - This implementation does not include optimized post-processing code needed for deployment. Post-processing the network outputs now takes more time than the network itself.
-- \[Contributions welcome\] The reproduced numbers are still lower than the original paper (e.g. 34.2 PQ vs. 35.1 PQ with ResNet), this is probably due to slightly different data preprocessing. Please open an issue if you are interested to improve COCO performance.
+- \[**Contributions welcome**\] The reproduced numbers are still lower than the original paper (e.g. 34.2 PQ vs. 35.1 PQ with ResNet), this is probably due to slightly different data preprocessing. Please refer to [this issue](https://github.com/bowenc0221/panoptic-deeplab/issues/60) if you are interested to improve COCO performance.
 
 ## Citing Panoptic-DeepLab
 
