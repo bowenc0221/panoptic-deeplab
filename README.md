@@ -64,7 +64,7 @@ Note:
 <td align="center"> 73.2 </td>
 <td align="center"> 78.7 </td>
 <td align="center"> 32.1 </td>
-<td align="center"><a href="
+<td align="center"><a href="https://dl.fbaipublicfiles.com/detectron2/PanopticDeepLab/Cityscapes-PanopticSegmentation/panoptic_deeplab_R_52_os16_mg124_poly_90k_bs32_crop_512_1024_dsconv/model_final_23d03a.pkl
 ">model</a></td>
 </tr>
  <tr><td align="left"><a href="tools_d2/configs/Cityscapes-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_90k_bs32_crop_512_1024_dsconv.yaml">Panoptic-DeepLab (DSConv)</a></td>
@@ -117,7 +117,7 @@ Note:
 <td align="center"> 43.2 </td>
 <td align="center"> 17.3 </td>
 <td align="center"> 18.5 </td>
-<td align="center"><a href="
+<td align="center"><a href="https://dl.fbaipublicfiles.com/detectron2/PanopticDeepLab/COCO-PanopticSegmentation/panoptic_deeplab_R_52_os16_mg124_poly_200k_bs64_crop_640_640_coco_dsconv/model_final_dee2af.pkl
 ">model</a></td>
 </tr>
  <tr><td align="left"><a href="tools_d2/configs/COCO-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_200k_bs64_crop_640_640_coco_dsconv.yaml">Panoptic-DeepLab (DSConv)</a></td>
