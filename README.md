@@ -11,6 +11,7 @@ This is the **PyTorch re-implementation** of our CVPR2020 paper based on Detectr
 [Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation](https://arxiv.org/abs/1911.10194). Segmentation models with DeepLabV3 and DeepLabV3+ are also supported in this repo now!
 
 ## News
+* [2021/01/25] Found a bug in old config files for COCO experiments (need to change `MAX_SIZE_TRAIN` from 640 to 960 for COCO). Now we have also reproduced COCO results (35.5 PQ)!
 * [2020/12/17] Support COCO dataset!
 * [2020/12/11] Support DepthwiseSeparableConv2d in the Detectron2 version of Panoptic-DeepLab. Now the Panoptic-DeepLab in Detectron2 is exactly the same as the implementation in our paper, except the post-processing has not been optimized.
 * [2020/09/24] I have implemented both [DeepLab](https://github.com/facebookresearch/detectron2/tree/master/projects/DeepLab) and [Panoptic-DeepLab](https://github.com/facebookresearch/detectron2/tree/master/projects/Panoptic-DeepLab) in the official [Detectron2](https://github.com/facebookresearch/detectron2), the implementation in the repo will be deprecated and I will mainly maintain the Detectron2 version. However, this repo still support different backbones for the Detectron2 Panoptic-DeepLab.
@@ -112,34 +113,34 @@ Note:
  <tr><td align="left"><a href="https://github.com/facebookresearch/detectron2/blob/master/projects/Panoptic-DeepLab/configs/COCO-PanopticSegmentation/panoptic_deeplab_R_52_os16_mg124_poly_200k_bs64_crop_640_640_coco_dsconv.yaml">Panoptic-DeepLab (DSConv)</td>
 <td align="center">R52-DC5</td>
 <td align="center">640&times;640</td>
-<td align="center"> 34.2 </td>
-<td align="center"> 75.5 </td>
-<td align="center"> 43.2 </td>
-<td align="center"> 17.3 </td>
-<td align="center"> 18.5 </td>
-<td align="center"><a href="https://dl.fbaipublicfiles.com/detectron2/PanopticDeepLab/COCO-PanopticSegmentation/panoptic_deeplab_R_52_os16_mg124_poly_200k_bs64_crop_640_640_coco_dsconv/model_final_dee2af.pkl
+<td align="center"> 35.5 </td>
+<td align="center"> 77.3 </td>
+<td align="center"> 44.7 </td>
+<td align="center"> 18.6 </td>
+<td align="center"> 19.7 </td>
+<td align="center"><a href="
 ">model</a></td>
 </tr>
  <tr><td align="left"><a href="tools_d2/configs/COCO-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_200k_bs64_crop_640_640_coco_dsconv.yaml">Panoptic-DeepLab (DSConv)</a></td>
 <td align="center">X65-DC5</td>
 <td align="center">640&times;640</td>
-<td align="center"> 36.7 </td>
-<td align="center"> 77.4 </td>
-<td align="center"> 45.8 </td>
-<td align="center"> 19.9 </td>
-<td align="center"> 20.5 </td>
-<td align="center"><a href="https://drive.google.com/file/d/1FVj1amFkkbwL9RTba2oUYcwlD1JJMx-T/view?usp=sharing
+<td align="center"> - </td>
+<td align="center"> - </td>
+<td align="center"> - </td>
+<td align="center"> - </td>
+<td align="center"> - </td>
+<td align="center"><a href="
 ">model</a></td>
 </tr>
  <tr><td align="left"><a href="tools_d2/configs/COCO-PanopticSegmentation/panoptic_deeplab_H_48_os16_mg124_poly_200k_bs64_crop_640_640_coco_dsconv.yaml">Panoptic-DeepLab (DSConv)</a></td>
 <td align="center">HRNet-48</td>
 <td align="center">640&times;640</td>
-<td align="center"> 37.8 </td>
-<td align="center"> 78.1 </td>
-<td align="center"> 46.9 </td>
-<td align="center"> 21.6 </td>
-<td align="center"> 22.3 </td>
-<td align="center"><a href="https://drive.google.com/file/d/17bl_n0SUXVktA0x2507dlwmti7s8FIpe/view?usp=sharing
+<td align="center"> - </td>
+<td align="center"> - </td>
+<td align="center"> - </td>
+<td align="center"> - </td>
+<td align="center"> - </td>
+<td align="center"><a href="
 ">model</a></td>
 </tr>
 </tbody></table>
