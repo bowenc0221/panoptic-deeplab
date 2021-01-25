@@ -244,6 +244,7 @@ COCO models are trained with ImageNet pretraining.
 </tbody></table>
 
 Note:
+- **These results are trained with old COCO config files (with `MAX_SIZE_TRAIN` set to 640 instead of 960), I will try to update these numbers as soon as I have machines to train models**
 - This implementation uses DepthwiseSeparableConv2d (DSConv) in ASPP and decoder, which is same as the original paper.
 - This implementation does not include optimized post-processing code needed for deployment. Post-processing the network
   outputs now takes more time than the network itself.
