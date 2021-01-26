@@ -118,7 +118,7 @@ Note:
 <td align="center"> 44.7 </td>
 <td align="center"> 18.6 </td>
 <td align="center"> 19.7 </td>
-<td align="center"><a href="
+<td align="center"><a href="https://dl.fbaipublicfiles.com/detectron2/PanopticDeepLab/COCO-PanopticSegmentation/panoptic_deeplab_R_52_os16_mg124_poly_200k_bs64_crop_640_640_coco_dsconv/model_final_5e6da2.pkl
 ">model</a></td>
 </tr>
  <tr><td align="left"><a href="tools_d2/configs/COCO-PanopticSegmentation/panoptic_deeplab_X_65_os16_mg124_poly_200k_bs64_crop_640_640_coco_dsconv.yaml">Panoptic-DeepLab (DSConv)</a></td>
