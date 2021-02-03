@@ -100,7 +100,10 @@ def main():
         if 'state_dict' in model_weights.keys():
             model_weights = model_weights['state_dict']
             logger.info('Evaluating a intermediate checkpoint.')
-        model.load_state_dict(model_weights, strict=True)
+        try:
+            model.load_state_dict(model_weights)
+        except Exception as e:
+            print(e)
         logger.info('Test model loaded from {}'.format(model_state_file))
     else:
         if not config.DEBUG.DEBUG:
@@ -258,7 +261,8 @@ def main():
                         threshold=config.POST_PROCESSING.CENTER_THRESHOLD,
                         nms_kernel=config.POST_PROCESSING.NMS_KERNEL,
                         top_k=config.POST_PROCESSING.TOP_K_INSTANCE,
-                        foreground_mask=foreground_pred)
+                        foreground_mask=foreground_pred,
+                        num_classes=data_loader.dataset.num_classes)
                 else:
                     panoptic_pred = None
                 torch.cuda.synchronize(device)
@@ -365,6 +369,7 @@ def main():
                         target_keys=config.DEBUG.TARGET_KEYS,
                         output_keys=config.DEBUG.OUTPUT_KEYS,
                         is_train=False,
+                        dump_raw=True,
                     )
                     if panoptic_pred is not None:
                         # Processed outputs
