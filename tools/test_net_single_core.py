@@ -100,10 +100,7 @@ def main():
         if 'state_dict' in model_weights.keys():
             model_weights = model_weights['state_dict']
             logger.info('Evaluating a intermediate checkpoint.')
-        try:
-            model.load_state_dict(model_weights)
-        except Exception as e:
-            print(e)
+        model.load_state_dict(model_weights, strict=True)
         logger.info('Test model loaded from {}'.format(model_state_file))
     else:
         if not config.DEBUG.DEBUG:
@@ -369,7 +366,6 @@ def main():
                         target_keys=config.DEBUG.TARGET_KEYS,
                         output_keys=config.DEBUG.OUTPUT_KEYS,
                         is_train=False,
-                        dump_raw=True,
                     )
                     if panoptic_pred is not None:
                         # Processed outputs
