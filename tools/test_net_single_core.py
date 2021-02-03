@@ -258,7 +258,8 @@ def main():
                         threshold=config.POST_PROCESSING.CENTER_THRESHOLD,
                         nms_kernel=config.POST_PROCESSING.NMS_KERNEL,
                         top_k=config.POST_PROCESSING.TOP_K_INSTANCE,
-                        foreground_mask=foreground_pred)
+                        foreground_mask=foreground_pred,
+                        num_classes=data_loader.dataset.num_classes)
                 else:
                     panoptic_pred = None
                 torch.cuda.synchronize(device)
