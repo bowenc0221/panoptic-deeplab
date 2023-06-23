@@ -6,7 +6,7 @@
 from collections import OrderedDict
 
 import torch.nn as nn
-from torchvision.models.utils import load_state_dict_from_url
+from torch.hub import load_state_dict_from_url
 
 __all__ = ['Xception65', 'xception65']
 
